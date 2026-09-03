@@ -63,7 +63,7 @@ export default function MetricCards({ stats, onSelectFilter }) {
           <div className="metric-value" style={{ color: 'var(--orange-warning)' }}>
             {stats.total_faltaram || 0}
           </div>
-          <div className="metric-desc">Meta baixa; +20% de gordurinha</div>
+          <div className="metric-desc">Meta baixa; +20% de margem</div>
         </div>
         <div className="metric-icon-box orange">
           <Flame size={22} />

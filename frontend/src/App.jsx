@@ -112,7 +112,7 @@ export default function App() {
     try {
       const updated = await api.toggleFaltaMes(id);
       const statusText = updated.faltou_no_meio_do_mes 
-        ? 'marcado com falta no mês (+20% de gordurinha aplicado)' 
+        ? 'marcado com falta no mês (+20% de margem aplicado)' 
         : 'desmarcado de falta no mês';
       showToast(`"${updated.nome}" ${statusText}.`);
       loadData();

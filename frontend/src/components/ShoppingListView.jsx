@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { 
-  Copy, 
-  Check, 
-  Smartphone, 
-  RefreshCw, 
-  Archive, 
-  AlertTriangle, 
-  Flame, 
+import {
+  Copy,
+  Check,
+  Smartphone,
+  RefreshCw,
+  Archive,
+  AlertTriangle,
+  Flame,
   TrendingUp,
   FileText
 } from 'lucide-react';
@@ -36,13 +36,11 @@ export default function ShoppingListView({
 
   return (
     <div className="shopping-list-container">
-      {/* Header Banner */}
+      {/* Banner */}
       <div className="list-header-banner">
         <div>
           <h2>Lista de Compras Oficial do Mês</h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '4px' }}>
-            Formato de saída gerado pelo backend Django: <code style={{ color: 'var(--amber-light)' }}>Comprar: &lt;quantidade&gt; &lt;unidade&gt; de &lt;ingrediente&gt;</code>
-          </p>
+
         </div>
 
         <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
@@ -53,7 +51,7 @@ export default function ShoppingListView({
             disabled={total_itens_a_comprar === 0}
           >
             {copied ? <Check size={16} color="#059669" /> : <Copy size={16} />}
-            <span>{copied ? 'Copiado para WhatsApp!' : 'Copiar Lista'}</span>
+            <span>{copied ? 'Copiado!' : 'Copiar Lista'}</span>
           </button>
 
           <button
@@ -93,11 +91,11 @@ export default function ShoppingListView({
           </div>
 
           {/* Ações Avançadas */}
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center', 
-            flexWrap: 'wrap', 
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
             gap: '1rem',
             background: 'rgba(255, 255, 255, 0.02)',
             padding: '1rem 1.25rem',
@@ -121,22 +119,13 @@ export default function ShoppingListView({
                 title="Aplica a nova meta com +20% para os itens que faltaram no mês"
               >
                 <RefreshCw size={14} />
-                <span>Atualizar Metas (+20% Gordura)</span>
+                <span>Atualizar Metas (+20%)</span>
               </button>
 
-              <button
-                id="btn-save-history"
-                className="btn btn-secondary btn-sm"
-                onClick={onSalvarHistorico}
-                disabled={loading}
-              >
-                <Archive size={14} />
-                <span>Arquivar no Histórico</span>
-              </button>
             </div>
           </div>
 
-          {/* Cards Detalhados dos Itens com Justificativa das Regras */}
+          {/* Cards dos Itens com Justificativa das Regras */}
           <h3 style={{ marginBottom: '1rem', fontSize: '1.1rem' }}>
             Detalhamento e Justificativas de Cálculo (Seu Raimundo)
           </h3>
@@ -161,9 +150,9 @@ export default function ShoppingListView({
                 <div key={idx} className={`shopping-item-card ${cardType}`}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <span className="shopping-item-title">{item.nome}</span>
-                    <span style={{ 
-                      fontSize: '0.75rem', 
-                      fontWeight: 700, 
+                    <span style={{
+                      fontSize: '0.75rem',
+                      fontWeight: 700,
                       color: badgeColor,
                       display: 'flex',
                       alignItems: 'center',
@@ -171,14 +160,14 @@ export default function ShoppingListView({
                     }}>
                       <Icon size={13} />
                       {item.regra_aplicada === 'VENCIDO' && 'VENCIDO'}
-                      {item.regra_aplicada === 'FALTA_NO_MES' && '+20% GORDURA'}
+                      {item.regra_aplicada === 'FALTA_NO_MES' && '+20% '}
                       {item.regra_aplicada === 'NORMAL' && 'NORMAL'}
                     </span>
                   </div>
 
-                  <div style={{ 
-                    fontSize: '1.25rem', 
-                    fontWeight: 800, 
+                  <div style={{
+                    fontSize: '1.25rem',
+                    fontWeight: 800,
                     color: '#ffffff',
                     fontFamily: 'var(--font-heading)'
                   }}>
