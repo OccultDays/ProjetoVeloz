@@ -149,6 +149,20 @@ export default function App() {
     }
   };
 
+  const handleConfirmarCompra = async () => {
+    try {
+      setLoading(true);
+      const res = await api.confirmarCompra();
+      showToast(res.mensagem || 'Estoque atualizado com sucesso!');
+      setIsFeiraModalOpen(false);
+      await loadData();
+    } catch (err) {
+      showToast(`Erro ao atualizar estoque: ${err.message}`, 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div>
       <Navbar 
@@ -207,11 +221,13 @@ export default function App() {
         editingItem={editingItem}
       />
 
-      {/* Modal Modo Feira para Celular / Checklist */}
+      {/* Modal Lista Interativa / Checklist */}
       <FeiraModeModal
         isOpen={isFeiraModalOpen}
         onClose={() => setIsFeiraModalOpen(false)}
         itensParaComprar={(shoppingData && shoppingData.itens_para_comprar) || []}
+        onConfirmarCompra={handleConfirmarCompra}
+        loading={loading}
       />
 
       {/* Feedback Toast */}

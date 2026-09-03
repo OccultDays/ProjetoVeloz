@@ -62,6 +62,9 @@ export const api = {
   atualizarMetasAjustadas: () => fetchApi('/compras/atualizar-metas/', {
     method: 'POST',
   }),
+  confirmarCompra: () => fetchApi('/compras/confirmar-compra/', {
+    method: 'POST',
+  }),
 
   // Dashboard & Histórico
   getDashboardStats: () => fetchApi('/dashboard/'),

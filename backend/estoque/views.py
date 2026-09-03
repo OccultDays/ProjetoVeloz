@@ -117,6 +117,65 @@ def atualizar_metas_ajustadas(request):
     })
 
 
+@api_view(["POST"])
+def confirmar_compra_atualizar_estoque(request):
+    """
+    Confirma que a compra dos itens da lista foi realizada e atualiza
+    automaticamente o estoque:
+    - Reposição normal: estoque volta para a meta.
+    - Vencido: estoque é renovado na meta e o status vencido é desmarcado.
+    - Falta no mês: estoque é abastecido com a nova meta (+20% gordura),
+      a meta é atualizada e a flag de falta é desmarcada.
+    - Salva um registro da compra no histórico.
+    """
+    ingredientes = list(Ingrediente.objects.all())
+    resultado = processar_lista_compras(ingredientes)
+    atualizados = []
+
+    for calculo in resultado["itens_para_comprar"]:
+        ing = Ingrediente.objects.get(id=calculo["id"])
+        regra = calculo["regra_aplicada"]
+        estoque_anterior = ing.estoque_atual
+        meta_anterior = ing.meta
+
+        if regra == "VENCIDO":
+            ing.estoque_atual = ing.meta
+            ing.vencido = False
+            ing.save(update_fields=["estoque_atual", "vencido", "atualizado_em"])
+        elif regra == "FALTA_NO_MES":
+            nova_meta = calculo["nova_meta_sugerida"]
+            ing.meta = nova_meta
+            ing.estoque_atual = nova_meta
+            ing.faltou_no_meio_do_mes = False
+            ing.consumo_real = None
+            ing.save(update_fields=["meta", "estoque_atual", "faltou_no_meio_do_mes", "consumo_real", "atualizado_em"])
+        else:  # NORMAL
+            ing.estoque_atual = ing.meta
+            ing.save(update_fields=["estoque_atual", "atualizado_em"])
+
+        atualizados.append({
+            "id": ing.id,
+            "nome": ing.nome,
+            "unidade": ing.unidade,
+            "estoque_anterior": formatar_quantidade(estoque_anterior),
+            "novo_estoque": formatar_quantidade(ing.estoque_atual),
+            "regra": regra,
+        })
+
+    # Registra no histórico se houve itens comprados
+    if resultado["linhas_texto"]:
+        RegistroCompra.objects.create(
+            total_itens=resultado["total_itens_a_comprar"],
+            conteudo_texto=resultado["texto_final"],
+        )
+
+    return Response({
+        "mensagem": f"Estoque atualizado com sucesso! {len(atualizados)} ingrediente(s) reabastecido(s).",
+        "total_reabastecidos": len(atualizados),
+        "itens_atualizados": atualizados,
+    })
+
+
 @api_view(["GET"])
 def dashboard_stats(request):
     """

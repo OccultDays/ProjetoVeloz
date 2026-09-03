@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
-import { X, CheckSquare, Square, ShoppingCart, CheckCircle2 } from 'lucide-react';
+import { X, CheckSquare, Square, CheckCircle2 } from 'lucide-react';
 
-export default function FeiraModeModal({ isOpen, onClose, itensParaComprar }) {
+export default function FeiraModeModal({ 
+  isOpen, 
+  onClose, 
+  itensParaComprar = [], 
+  onConfirmarCompra,
+  loading = false 
+}) {
   const [comprados, setComprados] = useState({});
 
   if (!isOpen) return null;
@@ -16,6 +22,17 @@ export default function FeiraModeModal({ isOpen, onClose, itensParaComprar }) {
   const totalComprados = Object.values(comprados).filter(Boolean).length;
   const totalItens = itensParaComprar.length;
   const progresso = totalItens > 0 ? Math.round((totalComprados / totalItens) * 100) : 0;
+  const isComplete = progresso === 100 && totalItens > 0;
+
+  const handleConfirmar = () => {
+    if (!isComplete || loading) return;
+    const certeza = window.confirm(
+      'Tem certeza que deseja confirmar a compra de todos os itens e atualizar o estoque automaticamente?'
+    );
+    if (certeza) {
+      onConfirmarCompra();
+    }
+  };
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -53,13 +70,17 @@ export default function FeiraModeModal({ isOpen, onClose, itensParaComprar }) {
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '0.85rem' }}>
               <span>Progresso das Compras</span>
-              <strong style={{ color: 'var(--emerald-success)' }}>{totalComprados} de {totalItens} ({progresso}%)</strong>
+              <strong style={{ color: isComplete ? 'var(--emerald-success)' : 'var(--amber-light)' }}>
+                {totalComprados} de {totalItens} ({progresso}%)
+              </strong>
             </div>
             <div style={{ width: '100%', height: '8px', background: '#1f2937', borderRadius: '999px', overflow: 'hidden' }}>
               <div style={{ 
                 width: `${progresso}%`, 
                 height: '100%', 
-                background: 'linear-gradient(90deg, var(--amber-primary), var(--emerald-success))',
+                background: isComplete 
+                  ? 'var(--emerald-success)' 
+                  : 'linear-gradient(90deg, var(--amber-primary), var(--emerald-success))',
                 transition: 'width 0.3s ease'
               }} />
             </div>
@@ -105,7 +126,7 @@ export default function FeiraModeModal({ isOpen, onClose, itensParaComprar }) {
             })}
           </div>
 
-          {progresso === 100 && (
+          {isComplete && (
             <div style={{ 
               display: 'flex', 
               alignItems: 'center', 
@@ -113,23 +134,56 @@ export default function FeiraModeModal({ isOpen, onClose, itensParaComprar }) {
               background: 'rgba(16, 185, 129, 0.1)',
               border: '1px solid rgba(16, 185, 129, 0.3)',
               padding: '1rem',
-              borderRadius: 'var(--radius-md)'
+              borderRadius: 'var(--radius-md)',
+              animation: 'fadeIn 0.25s ease-out'
             }}>
               <CheckCircle2 size={24} color="var(--emerald-success)" />
               <div>
-                <strong style={{ color: 'var(--emerald-success)' }}>Tudo comprado na feira!</strong>
+                <strong style={{ color: 'var(--emerald-success)' }}>Lista 100% concluída!</strong>
                 <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                  O Seu Raimundo já pode reabastecer a cozinha para o novo mês.
+                  Clique no botão <strong>Confirmar</strong> abaixo para atualizar automaticamente o estoque do restaurante.
                 </p>
               </div>
             </div>
           )}
         </div>
 
-        <div className="modal-footer">
-          <button type="button" className="btn btn-secondary" onClick={onClose}>
-            Fechar
-          </button>
+        <div className="modal-footer" style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+          <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
+            {isComplete ? (
+              <span style={{ color: 'var(--emerald-success)', fontWeight: 600 }}>
+                ✓ Checklist concluído
+              </span>
+            ) : (
+              <span>Marque todos os itens para liberar confirmação</span>
+            )}
+          </span>
+
+          <div style={{ display: 'flex', gap: '0.75rem' }}>
+            <button type="button" className="btn btn-secondary" onClick={onClose} disabled={loading}>
+              Fechar
+            </button>
+
+            <button
+              id="btn-confirmar-estoque"
+              type="button"
+              className="btn btn-success"
+              onClick={handleConfirmar}
+              disabled={!isComplete || loading}
+              title={isComplete ? 'Confirmar e atualizar estoque' : 'Complete 100% da lista para habilitar'}
+              style={{
+                opacity: isComplete ? 1 : 0.3,
+                cursor: isComplete ? 'pointer' : 'not-allowed',
+                boxShadow: isComplete ? '0 4px 14px var(--emerald-glow)' : 'none',
+                filter: isComplete ? 'none' : 'grayscale(0.7)',
+                pointerEvents: isComplete ? 'auto' : 'none',
+                transition: 'all 0.3s ease',
+              }}
+            >
+              <CheckCircle2 size={17} />
+              <span>{loading ? 'Atualizando...' : 'Confirmar'}</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>

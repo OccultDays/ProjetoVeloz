@@ -199,3 +199,20 @@ class DjangoIntegrationTestCase(TestCase):
         self.assertEqual(response["Content-Type"], "text/plain; charset=utf-8")
         conteudo = response.content.decode("utf-8")
         self.assertIn("Comprar: 12 Kg de Farinha", conteudo)
+
+    def test_confirmar_compra_atualizar_estoque(self):
+        """
+        Verifica se a confirmação da compra reabastece o estoque e
+        reseta o status de vencido.
+        """
+        response = self.client.post("/api/compras/confirmar-compra/")
+        self.assertEqual(response.status_code, 200)
+
+        # Farinha reabastece até a meta (50)
+        self.farinha.refresh_from_db()
+        self.assertEqual(self.farinha.estoque_atual, Decimal("50.00"))
+
+        # Leite reabastece até a meta (30) e desmarca vencido
+        self.leite.refresh_from_db()
+        self.assertEqual(self.leite.estoque_atual, Decimal("30.00"))
+        self.assertFalse(self.leite.vencido)
