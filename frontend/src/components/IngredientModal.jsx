@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Save, AlertTriangle, Flame } from 'lucide-react';
+import { X, Save, AlertTriangle, Flame, Plus, Check } from 'lucide-react';
 
 const COMMON_UNITS = ['Kg', 'L', 'unidade', 'g', 'ml', 'dz', 'pct'];
 
@@ -80,9 +80,25 @@ export default function IngredientModal({ isOpen, onClose, onSave, editingItem }
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+      <div 
+        className="modal-content ingredient-modal-dialog" 
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="modal-header">
-          <h2>{editingItem ? 'Editar Ingrediente' : 'Novo Ingrediente'}</h2>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+            <div className="brand-logo-badge" style={{ width: '36px', height: '36px', fontSize: '1.15rem' }}>
+              {editingItem ? '✏️' : '🥗'}
+            </div>
+            <div>
+              <h2 style={{ fontSize: '1.15rem', fontWeight: 700 }}>
+                {editingItem ? 'Editar Ingrediente' : 'Adicionar Novo Ingrediente'}
+              </h2>
+              <p style={{ fontSize: '0.76rem', color: 'var(--text-secondary)' }}>
+                {editingItem ? 'Modifique os dados do ingrediente' : 'Cadastre as metas e estoque do Seu Raimundo'}
+              </p>
+            </div>
+          </div>
+
           <button 
             type="button" 
             className="btn btn-secondary btn-icon-only" 
@@ -93,15 +109,18 @@ export default function IngredientModal({ isOpen, onClose, onSave, editingItem }
           </button>
         </div>
 
-        <form onSubmit={handleSubmit}>
-          <div className="modal-body">
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
+          <div className="modal-body" style={{ overflowY: 'auto' }}>
+            {/* Nome do Ingrediente */}
             <div className="form-group">
-              <label className="form-label" htmlFor="input-nome">Nome do Ingrediente *</label>
+              <label className="form-label" htmlFor="input-nome">
+                Nome do Ingrediente *
+              </label>
               <input
                 id="input-nome"
                 type="text"
                 className="form-input"
-                placeholder="Ex: Farinha de Trigo, Leite Integral, Ovo Caipira"
+                placeholder="Ex: Farinha de Trigo, Leite Integral, Café..."
                 value={formData.nome}
                 onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
                 autoFocus
@@ -109,30 +128,36 @@ export default function IngredientModal({ isOpen, onClose, onSave, editingItem }
               {errors.nome && <span style={{ color: 'var(--rose-danger)', fontSize: '0.78rem' }}>{errors.nome}</span>}
             </div>
 
+            {/* Seletor de Unidade Touch-Friendly */}
             <div className="form-group">
-              <label className="form-label">Unidade de Medida *</label>
-              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '8px' }}>
+              <label className="form-label">
+                Unidade de Medida *
+              </label>
+              <div className="unit-chips-scroll">
                 {COMMON_UNITS.map((u) => (
                   <button
                     key={u}
                     type="button"
-                    className={`btn btn-sm ${formData.unidade === u ? 'btn-primary' : 'btn-secondary'}`}
+                    className={`unit-chip ${formData.unidade === u ? 'active' : ''}`}
                     onClick={() => setFormData({ ...formData, unidade: u })}
                   >
-                    {u}
+                    {formData.unidade === u && <Check size={13} />}
+                    <span>{u}</span>
                   </button>
                 ))}
               </div>
               <input
                 type="text"
                 className="form-input"
-                placeholder="Outra unidade (ex: caixa, garrafa, maço)"
+                style={{ marginTop: '6px' }}
+                placeholder="Ou digite outra unidade (ex: caixa, maço, fardo)"
                 value={formData.unidade}
                 onChange={(e) => setFormData({ ...formData, unidade: e.target.value })}
               />
               {errors.unidade && <span style={{ color: 'var(--rose-danger)', fontSize: '0.78rem' }}>{errors.unidade}</span>}
             </div>
 
+            {/* Meta e Estoque Atual em Grid Responsivo */}
             <div className="form-grid-2">
               <div className="form-group">
                 <label className="form-label" htmlFor="input-meta">
@@ -148,8 +173,8 @@ export default function IngredientModal({ isOpen, onClose, onSave, editingItem }
                   value={formData.meta}
                   onChange={(e) => setFormData({ ...formData, meta: e.target.value })}
                 />
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                  Quantidade para manter no início do mês.
+                <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                  Quantidade para o início do mês.
                 </span>
                 {errors.meta && <span style={{ color: 'var(--rose-danger)', fontSize: '0.78rem' }}>{errors.meta}</span>}
               </div>
@@ -168,33 +193,33 @@ export default function IngredientModal({ isOpen, onClose, onSave, editingItem }
                   value={formData.estoque_atual}
                   onChange={(e) => setFormData({ ...formData, estoque_atual: e.target.value })}
                 />
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                  Sobra encontrada no fim do mês.
+                <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                  Sobra restante neste momento.
                 </span>
                 {errors.estoque_atual && <span style={{ color: 'var(--rose-danger)', fontSize: '0.78rem' }}>{errors.estoque_atual}</span>}
               </div>
             </div>
 
-            {/* Business Rules Controls */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '0.5rem' }}>
-              <label className="checkbox-card">
+            {/* Regras de Negócio do Seu Raimundo (Cards de toque largo) */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+              <label className={`checkbox-card ${formData.vencido ? 'active-vencido-card' : ''}`}>
                 <input
                   type="checkbox"
                   checked={formData.vencido}
                   onChange={(e) => setFormData({ ...formData, vencido: e.target.checked })}
                 />
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600 }}>
-                    <AlertTriangle size={15} color="var(--rose-danger)" />
-                    <span>O ingrediente venceu ou estragou neste mês?</span>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, fontSize: '0.9rem' }}>
+                    <AlertTriangle size={16} color="var(--rose-danger)" />
+                    <span>Ingrediente estragou ou venceu?</span>
                   </div>
-                  <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '2px' }}>
-                    Regra do Seu Raimundo: Toda a sobra será descartada e o sistema recomendará recomprar a <strong>meta integral</strong>.
+                  <p style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '2px', lineHeight: 1.4 }}>
+                    Sobra será descartada; o sistema comprará a <strong>meta inteira</strong>.
                   </p>
                 </div>
               </label>
 
-              <label className="checkbox-card">
+              <label className={`checkbox-card ${formData.faltou_no_meio_do_mes ? 'active-falta-card' : ''}`}>
                 <input
                   type="checkbox"
                   checked={formData.faltou_no_meio_do_mes}
@@ -207,13 +232,13 @@ export default function IngredientModal({ isOpen, onClose, onSave, editingItem }
                     });
                   }}
                 />
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600 }}>
-                    <Flame size={15} color="var(--orange-warning)" />
-                    <span>Acabou no meio do mês antes de terminar?</span>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, fontSize: '0.9rem' }}>
+                    <Flame size={16} color="var(--orange-warning)" />
+                    <span>Faltou no meio do mês antes de acabar?</span>
                   </div>
-                  <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '2px' }}>
-                    Regra do Seu Raimundo: A meta estava muito baixa. Comprará com base no que foi consumido + <strong>20% de gordurinha</strong>.
+                  <p style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '2px', lineHeight: 1.4 }}>
+                    Meta estava subdimensionada; comprará o consumo com <strong>+20% de gordurinha</strong>.
                   </p>
                 </div>
               </label>
@@ -221,9 +246,10 @@ export default function IngredientModal({ isOpen, onClose, onSave, editingItem }
               {formData.faltou_no_meio_do_mes && (
                 <div className="form-group" style={{ 
                   background: 'rgba(249, 115, 22, 0.08)', 
-                  border: '1px solid rgba(249, 115, 22, 0.25)',
+                  border: '1px solid rgba(249, 115, 22, 0.3)',
                   padding: '0.85rem',
-                  borderRadius: 'var(--radius-md)'
+                  borderRadius: 'var(--radius-md)',
+                  animation: 'fadeIn 0.2s ease-out'
                 }}>
                   <label className="form-label" htmlFor="input-consumo">
                     Consumo Real Total do Mês ({formData.unidade || 'unidade'})
@@ -234,17 +260,18 @@ export default function IngredientModal({ isOpen, onClose, onSave, editingItem }
                     step="any"
                     min="0"
                     className="form-input"
-                    placeholder={`Opcional. Se vazio, assume a meta de ${formData.meta || 0}`}
+                    placeholder={`Opcional. Padrão: ${formData.meta || 0}`}
                     value={formData.consumo_real}
                     onChange={(e) => setFormData({ ...formData, consumo_real: e.target.value })}
                   />
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                    Preencha caso tenha comprado estoque extra de emergência durante o mês que também foi consumido.
+                  <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                    Preencha caso tenha comprado estoque extra de emergência durante o mês.
                   </span>
                 </div>
               )}
             </div>
 
+            {/* Observações */}
             <div className="form-group">
               <label className="form-label" htmlFor="input-observacao">Observações (opcional)</label>
               <textarea
@@ -258,6 +285,7 @@ export default function IngredientModal({ isOpen, onClose, onSave, editingItem }
             </div>
           </div>
 
+          {/* Footer fixo e sempre visível */}
           <div className="modal-footer">
             <button type="button" className="btn btn-secondary" onClick={onClose}>
               Cancelar
