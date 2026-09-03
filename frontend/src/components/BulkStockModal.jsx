@@ -185,6 +185,12 @@ export default function BulkStockModal({
                   );
                 })
               )}
+
+              {/* Widget invisível com as mesmas proporções de um item de estoque para evitar corte na rolagem */}
+              <div 
+                className="bulk-stock-item-row invisible-spacer-widget" 
+                aria-hidden="true" 
+              />
             </div>
           </div>
 

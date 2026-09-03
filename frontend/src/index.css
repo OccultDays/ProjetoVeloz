@@ -830,19 +830,37 @@ button, input, select, textarea {
   display: none;
 }
 
-/* Widget invisível com as mesmas proporções de um card de ingrediente */
+/* Widget invisível com as mesmas proporções dos respectivos componentes */
 .invisible-spacer-widget {
   visibility: hidden !important;
   opacity: 0 !important;
   pointer-events: none !important;
   user-select: none !important;
-  min-height: 220px !important;
-  height: 220px !important;
   border: none !important;
   background: transparent !important;
   box-shadow: none !important;
   margin: 0 !important;
   padding: 0 !important;
+}
+
+.mobile-ingredient-card.invisible-spacer-widget {
+  min-height: 220px !important;
+  height: 220px !important;
+}
+
+.bulk-stock-item-row.invisible-spacer-widget {
+  min-height: 85px !important;
+  height: 85px !important;
+}
+
+.feira-item.invisible-spacer-widget {
+  min-height: 68px !important;
+  height: 68px !important;
+}
+
+.form-group-spacer.invisible-spacer-widget {
+  min-height: 80px !important;
+  height: 80px !important;
 }
 
 /* Base Bulk Stock Items */
