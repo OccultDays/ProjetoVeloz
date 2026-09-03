@@ -26,9 +26,9 @@ export default function FeiraModeModal({ isOpen, onClose, itensParaComprar }) {
               🧺
             </div>
             <div>
-              <h2 style={{ fontSize: '1.15rem' }}>Modo "Rapaz da Feira"</h2>
+              <h2 style={{ fontSize: '1.15rem' }}>Lista Interativa</h2>
               <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
-                Checklist interativo com unidades de medida exatas
+                Checklist dinâmico de compras com unidades de medida
               </p>
             </div>
           </div>

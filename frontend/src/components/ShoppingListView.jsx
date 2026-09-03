@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { 
   Copy, 
   Check, 
-  Download, 
   Smartphone, 
   RefreshCw, 
   Archive, 
@@ -35,18 +34,6 @@ export default function ShoppingListView({
     setTimeout(() => setCopied(false), 2500);
   };
 
-  const handleDownloadTxt = () => {
-    const blob = new Blob([texto_final || 'Nenhum item para comprar.'], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `lista_compras_seu_raimundo_${new Date().toISOString().slice(0, 10)}.txt`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  };
-
   return (
     <div className="shopping-list-container">
       {/* Header Banner */}
@@ -70,23 +57,13 @@ export default function ShoppingListView({
           </button>
 
           <button
-            id="btn-download-txt"
-            className="btn btn-secondary"
-            onClick={handleDownloadTxt}
-            disabled={total_itens_a_comprar === 0}
-          >
-            <Download size={16} />
-            <span>Baixar TXT</span>
-          </button>
-
-          <button
             id="btn-open-feira-mode"
             className="btn btn-success"
             onClick={onOpenFeiraMode}
             disabled={total_itens_a_comprar === 0}
           >
             <Smartphone size={16} />
-            <span>Modo "Rapaz da Feira"</span>
+            <span>Lista Interativa</span>
           </button>
         </div>
       </div>
