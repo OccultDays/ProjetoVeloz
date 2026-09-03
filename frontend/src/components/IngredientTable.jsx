@@ -105,8 +105,8 @@ export default function IngredientTable({
         </div>
       </div>
 
-      {/* Table */}
-      <div className="table-wrapper">
+      {/* Visualização Desktop: Tabela Completa */}
+      <div className="table-wrapper desktop-table-view">
         <table className="data-table">
           <thead>
             <tr>
@@ -263,6 +263,139 @@ export default function IngredientTable({
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* Visualização Mobile: Cards Otimizados para Smartphone */}
+      <div className="mobile-cards-view">
+        {filteredItems.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-state-icon">📦</div>
+            <h3>Nenhum ingrediente encontrado</h3>
+            <p>Tente ajustar a busca ou cadastre um novo ingrediente acima.</p>
+          </div>
+        ) : (
+          filteredItems.map((item) => {
+            const calc = item.calculo_reposicao || {};
+            const deveComprar = calc.deve_comprar;
+
+            let badgeClass = 'ok';
+            let badgeText = 'Estoque OK';
+            let BadgeIcon = CheckCircle2;
+
+            if (item.vencido) {
+              badgeClass = 'vencido';
+              badgeText = 'Vencido (Descarte)';
+              BadgeIcon = AlertTriangle;
+            } else if (item.faltou_no_meio_do_mes) {
+              badgeClass = 'falta';
+              badgeText = 'Faltou (+20% Gordura)';
+              BadgeIcon = Flame;
+            } else if (deveComprar) {
+              badgeClass = 'normal';
+              badgeText = 'Reposição Padrão';
+              BadgeIcon = TrendingUp;
+            }
+
+            return (
+              <div 
+                key={item.id} 
+                className="mobile-ingredient-card" 
+                id={`card-mobile-ingrediente-${item.id}`}
+              >
+                {/* Header do Card Mobile */}
+                <div className="mobile-card-header">
+                  <div style={{ flex: 1, paddingRight: '0.5rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                      <span className="mobile-card-title">{item.nome}</span>
+                      <span className="unit-badge">{item.unidade}</span>
+                    </div>
+                    {item.observacao && (
+                      <p className="mobile-card-obs">{item.observacao}</p>
+                    )}
+                  </div>
+
+                  <div className="mobile-card-actions">
+                    <button
+                      type="button"
+                      className="btn btn-secondary btn-icon-only btn-sm"
+                      title="Editar"
+                      onClick={() => onEdit(item)}
+                    >
+                      <Edit2 size={15} />
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-danger btn-icon-only btn-sm"
+                      title="Excluir"
+                      onClick={() => onDelete(item.id, item.nome)}
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Badge de Status */}
+                <div style={{ margin: '0.5rem 0' }}>
+                  <span className={`status-badge ${badgeClass}`}>
+                    <BadgeIcon size={13} />
+                    {badgeText}
+                  </span>
+                </div>
+
+                {/* Grid de Estatísticas: Meta, Estoque e Comprar */}
+                <div className="mobile-card-stats-grid">
+                  <div className="mobile-stat-box">
+                    <span className="mobile-stat-label">Meta</span>
+                    <span className="mobile-stat-value">
+                      {calc.meta !== undefined ? parseFloat(calc.meta).toString() : item.meta} {item.unidade}
+                    </span>
+                  </div>
+
+                  <div className="mobile-stat-box">
+                    <span className="mobile-stat-label">Estoque Atual</span>
+                    <span 
+                      className="mobile-stat-value" 
+                      style={{ color: item.estoque_atual <= 0 ? 'var(--rose-danger)' : 'inherit' }}
+                    >
+                      {calc.estoque_atual !== undefined ? parseFloat(calc.estoque_atual).toString() : item.estoque_atual} {item.unidade}
+                    </span>
+                  </div>
+
+                  <div className={`mobile-stat-box ${deveComprar ? 'highlight' : ''}`}>
+                    <span className="mobile-stat-label">A Comprar</span>
+                    <span 
+                      className="mobile-stat-value"
+                      style={{ color: deveComprar ? 'var(--amber-primary)' : 'var(--text-muted)', fontWeight: 700 }}
+                    >
+                      {deveComprar ? `${calc.quantidade_formatada} ${item.unidade}` : '—'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Ações Rápidas em Mobile: Botões largos para toque com o polegar */}
+                <div className="mobile-card-toggles">
+                  <button
+                    type="button"
+                    className={`mobile-toggle-btn ${item.vencido ? 'active-vencido' : ''}`}
+                    onClick={() => onToggleVencido(item.id)}
+                  >
+                    <AlertTriangle size={15} />
+                    <span>{item.vencido ? 'Vencido!' : 'Venceu?'}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    className={`mobile-toggle-btn ${item.faltou_no_meio_do_mes ? 'active-falta' : ''}`}
+                    onClick={() => onToggleFaltaMes(item.id)}
+                  >
+                    <Flame size={15} />
+                    <span>{item.faltou_no_meio_do_mes ? 'Faltou!' : 'Faltou?'}</span>
+                  </button>
+                </div>
+              </div>
+            );
+          })
+        )}
       </div>
     </div>
   );

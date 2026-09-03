@@ -61,8 +61,7 @@ export default function BulkStockModal({
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div 
-        className="modal-content" 
-        style={{ maxWidth: '680px', maxHeight: '88vh' }} 
+        className="modal-content bulk-stock-modal-dialog" 
         onClick={(e) => e.stopPropagation()}
       >
         <div className="modal-header">
@@ -92,7 +91,7 @@ export default function BulkStockModal({
         <form onSubmit={handleSubmit}>
           <div className="modal-body" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
             {/* Search filter inside modal */}
-            <div className="search-input-wrapper" style={{ width: '100%', minWidth: '100%', marginBottom: '0.5rem' }}>
+            <div className="search-input-wrapper" style={{ width: '100%', minWidth: '100%', marginBottom: '0.75rem' }}>
               <Search size={16} />
               <input
                 type="text"
@@ -118,19 +117,9 @@ export default function BulkStockModal({
                   return (
                     <div
                       key={item.id}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        padding: '0.85rem 1rem',
-                        borderRadius: 'var(--radius-md)',
-                        background: 'rgba(255, 255, 255, 0.02)',
-                        border: '1px solid var(--border-subtle)',
-                        gap: '1rem',
-                        flexWrap: 'wrap',
-                      }}
+                      className="bulk-stock-item-row"
                     >
-                      <div style={{ flex: '1 1 200px' }}>
+                      <div className="bulk-item-info">
                         <div style={{ fontWeight: 600, fontSize: '0.95rem' }}>{item.nome}</div>
                         <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
                           Meta: <strong style={{ color: 'var(--text-secondary)' }}>{item.meta} {item.unidade}</strong>
@@ -142,14 +131,13 @@ export default function BulkStockModal({
                         </div>
                       </div>
 
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                      <div className="bulk-item-controls">
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                           <input
                             type="number"
                             step="any"
                             min="0"
-                            className="form-input"
-                            style={{ width: '95px', padding: '0.45rem 0.6rem', textAlign: 'right', fontWeight: 600 }}
+                            className="form-input bulk-num-input"
                             value={currentVal}
                             onChange={(e) => handleStockChange(item.id, e.target.value)}
                           />
@@ -159,11 +147,11 @@ export default function BulkStockModal({
                         </div>
 
                         {/* Quick Action Helpers */}
-                        <div style={{ display: 'flex', gap: '3px' }}>
+                        <div style={{ display: 'flex', gap: '4px' }}>
                           <button
                             type="button"
                             className="btn btn-secondary btn-sm"
-                            style={{ padding: '0.35rem 0.5rem', fontSize: '0.72rem' }}
+                            style={{ padding: '0.45rem 0.65rem', fontSize: '0.75rem' }}
                             title="Zerar estoque deste item"
                             onClick={() => handleQuickFillZero(item.id)}
                           >
@@ -172,7 +160,7 @@ export default function BulkStockModal({
                           <button
                             type="button"
                             className="btn btn-secondary btn-sm"
-                            style={{ padding: '0.35rem 0.5rem', fontSize: '0.72rem' }}
+                            style={{ padding: '0.45rem 0.65rem', fontSize: '0.75rem' }}
                             title="Preencher com o valor da meta"
                             onClick={() => handleQuickFillMeta(item.id, item.meta)}
                           >
@@ -182,7 +170,7 @@ export default function BulkStockModal({
                       </div>
 
                       {/* Status indicator */}
-                      <div style={{ minWidth: '100px', textAlign: 'right', fontSize: '0.75rem' }}>
+                      <div className="bulk-item-status">
                         {dif > 0 ? (
                           <span style={{ color: 'var(--amber-light)', fontWeight: 600 }}>
                             Comprar: {dif.toFixed(2).replace(/\.00$/, '')} {item.unidade}
@@ -200,12 +188,12 @@ export default function BulkStockModal({
             </div>
           </div>
 
-          <div className="modal-footer" style={{ justifyContent: 'space-between' }}>
+          <div className="modal-footer" style={{ justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-              {ingredientes.length} ingrediente(s) no total
+              {ingredientes.length} ingrediente(s)
             </span>
 
-            <div style={{ display: 'flex', gap: '0.75rem' }}>
+            <div style={{ display: 'flex', gap: '0.75rem', width: 'auto' }} className="modal-footer-btns">
               <button 
                 type="button" 
                 className="btn btn-secondary" 
