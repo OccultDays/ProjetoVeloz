@@ -16,6 +16,7 @@ export default function ShoppingListView({
   onOpenFeiraMode,
   onAtualizarMetas,
   onSalvarHistorico,
+  onRefresh,
   loading,
 }) {
   const [copied, setCopied] = useState(false);
@@ -40,10 +41,22 @@ export default function ShoppingListView({
       <div className="list-header-banner">
         <div>
           <h2>Lista de Compras Oficial do Mês</h2>
-
         </div>
 
         <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+          {onRefresh && (
+            <button
+              id="btn-refresh-shopping-list"
+              className="btn btn-secondary"
+              onClick={onRefresh}
+              disabled={loading}
+              title="Recarregar e atualizar a lista de compras com os dados atuais do estoque"
+            >
+              <RefreshCw size={16} />
+              <span>Atualizar Lista</span>
+            </button>
+          )}
+
           <button
             id="btn-copy-shopping-list"
             className="btn btn-primary"

@@ -87,14 +87,14 @@ def calcular_item_reposicao(ingrediente: Any) -> Dict[str, Any]:
         else:
             consumo_base = meta
 
-        # Aplica margem de segurança de 20% (multiplicador 1.20)
+        # Aplica a "gordurinha" de 20% (multiplicador 1.20)
         quantidade_a_comprar = (consumo_base * Decimal("1.2")).quantize(
             Decimal("0.01"), rounding=ROUND_HALF_UP
         )
         nova_meta_sugerida = quantidade_a_comprar
         motivo = (
             f"Falta no meio do mês: calculado sobre consumo real ({formatar_quantidade(consumo_base)} {unidade}) "
-            f"+ 20% de margem de segurança. Nova meta sugerida: {formatar_quantidade(nova_meta_sugerida)} {unidade}."
+            f"+ 20% de margem de segurança ('gordurinha'). Nova meta sugerida: {formatar_quantidade(nova_meta_sugerida)} {unidade}."
         )
 
     # Caso 3: Reposição Padrão (Normal)
