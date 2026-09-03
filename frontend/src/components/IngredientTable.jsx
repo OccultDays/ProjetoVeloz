@@ -396,7 +396,19 @@ export default function IngredientTable({
             );
           })
         )}
+
+        {/* Widget invisível com as mesmas proporções de um card de ingrediente para evitar cortes na rolagem inferior */}
+        <div 
+          className="mobile-ingredient-card invisible-spacer-widget" 
+          aria-hidden="true"
+        />
       </div>
+
+      {/* Widget invisível de compensação geral no rodapé */}
+      <div 
+        className="invisible-spacer-widget desktop-table-view" 
+        aria-hidden="true" 
+      />
     </div>
   );
 }
