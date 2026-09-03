@@ -52,6 +52,10 @@ export const api = {
   toggleFaltaMes: (id) => fetchApi(`/ingredientes/${id}/toggle-falta-mes/`, {
     method: 'POST',
   }),
+  atualizarEstoquesEmLote: (itens) => fetchApi('/ingredientes/atualizar-estoques/', {
+    method: 'POST',
+    body: JSON.stringify({ itens }),
+  }),
 
   // Compras e Reposição
   getListaCompras: () => fetchApi('/compras/'),

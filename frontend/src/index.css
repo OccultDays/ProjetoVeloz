@@ -372,6 +372,16 @@ button, input, select, textarea {
   transform: translateY(-1px);
 }
 
+.btn-blue {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+.btn-blue:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
 .btn-success {
   background: linear-gradient(135deg, var(--emerald-success), #059669);
   color: #ffffff;

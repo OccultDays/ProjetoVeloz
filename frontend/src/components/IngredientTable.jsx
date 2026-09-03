@@ -9,7 +9,8 @@ import {
   CheckCircle2,
   AlertTriangle,
   Flame,
-  ShoppingBag
+  ShoppingBag,
+  Boxes
 } from 'lucide-react';
 
 export default function IngredientTable({
@@ -19,6 +20,7 @@ export default function IngredientTable({
   filterStatus,
   setFilterStatus,
   onAddNew,
+  onOpenAtualizarEstoque,
   onEdit,
   onDelete,
   onToggleVencido,
@@ -76,11 +78,20 @@ export default function IngredientTable({
         <div className="actions-group">
           <button
             id="btn-add-ingredient"
-            className="btn btn-primary"
+            className="btn btn-blue"
             onClick={onAddNew}
           >
             <Plus size={18} />
             <span>Novo Ingrediente</span>
+          </button>
+
+          <button
+            id="btn-atualizar-estoque"
+            className="btn btn-primary"
+            onClick={onOpenAtualizarEstoque}
+          >
+            <Boxes size={18} />
+            <span>Atualizar Estoque</span>
           </button>
 
           <button

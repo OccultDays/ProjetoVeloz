@@ -34,6 +34,31 @@ class IngredienteViewSet(viewsets.ModelViewSet):
         ingrediente.save(update_fields=["faltou_no_meio_do_mes", "estoque_atual"])
         return Response(IngredienteSerializer(ingrediente).data)
 
+    @action(detail=False, methods=["post"], url_path="atualizar-estoques")
+    def atualizar_estoques(self, request):
+        """
+        Atualiza o estoque atual de múltiplos ingredientes em lote.
+        Formato esperado: {"itens": [{"id": 1, "estoque_atual": 15.0}, ...]}
+        """
+        itens = request.data.get("itens", [])
+        atualizados = 0
+        for item in itens:
+            item_id = item.get("id")
+            novo_estoque = item.get("estoque_atual")
+            if item_id is not None and novo_estoque is not None:
+                try:
+                    ing = Ingrediente.objects.get(id=item_id)
+                    ing.estoque_atual = Decimal(str(novo_estoque))
+                    ing.save(update_fields=["estoque_atual", "atualizado_em"])
+                    atualizados += 1
+                except (Ingrediente.DoesNotExist, Exception):
+                    continue
+
+        return Response({
+            "mensagem": f"Estoque de {atualizados} ingrediente(s) atualizado com sucesso!",
+            "total_atualizados": atualizados,
+        })
+
 
 class RegistroCompraViewSet(viewsets.ModelViewSet):
     queryset = RegistroCompra.objects.all().order_by("-criado_em")

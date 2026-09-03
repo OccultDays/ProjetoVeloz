@@ -6,6 +6,7 @@ import IngredientModal from './components/IngredientModal';
 import ShoppingListView from './components/ShoppingListView';
 import FeiraModeModal from './components/FeiraModeModal';
 import HistoryView from './components/HistoryView';
+import BulkStockModal from './components/BulkStockModal';
 import { api } from './services/api';
 import { CheckCircle2, AlertCircle } from 'lucide-react';
 
@@ -22,6 +23,7 @@ export default function App() {
   const [isIngredientModalOpen, setIsIngredientModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [isFeiraModalOpen, setIsFeiraModalOpen] = useState(false);
+  const [isBulkStockModalOpen, setIsBulkStockModalOpen] = useState(false);
 
   const [toast, setToast] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -176,6 +178,20 @@ export default function App() {
     }
   };
 
+  const handleSaveBulkStock = async (itens) => {
+    try {
+      setLoading(true);
+      const res = await api.atualizarEstoquesEmLote(itens);
+      showToast(res.mensagem || 'Estoques atualizados com sucesso!');
+      setIsBulkStockModalOpen(false);
+      await loadData();
+    } catch (err) {
+      showToast(`Erro ao atualizar estoques: ${err.message}`, 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div>
       <Navbar 
@@ -203,6 +219,7 @@ export default function App() {
             filterStatus={filterStatus}
             setFilterStatus={setFilterStatus}
             onAddNew={handleAddNew}
+            onOpenAtualizarEstoque={() => setIsBulkStockModalOpen(true)}
             onEdit={handleEdit}
             onDelete={handleDelete}
             onToggleVencido={handleToggleVencido}
@@ -236,6 +253,15 @@ export default function App() {
         onClose={() => setIsIngredientModalOpen(false)}
         onSave={handleSaveIngredient}
         editingItem={editingItem}
+      />
+
+      {/* Modal Atualizar Estoque Geral de Todos os Itens */}
+      <BulkStockModal
+        isOpen={isBulkStockModalOpen}
+        onClose={() => setIsBulkStockModalOpen(false)}
+        ingredientes={ingredientes}
+        onSaveBulk={handleSaveBulkStock}
+        loading={loading}
       />
 
       {/* Modal Lista Interativa / Checklist */}
