@@ -256,12 +256,6 @@ export default function IngredientModal({ isOpen, onClose, onSave, editingItem }
                 onChange={(e) => setFormData({ ...formData, observacao: e.target.value })}
               />
             </div>
-
-            {/* Widget invisível com as mesmas proporções de campo para evitar corte inferior */}
-            <div 
-              className="form-group-spacer invisible-spacer-widget" 
-              aria-hidden="true" 
-            />
           </div>
 
           <div className="modal-footer">

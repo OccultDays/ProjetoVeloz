@@ -211,12 +211,6 @@ export default function FeiraModeModal({
                 </div>
               );
             })}
-
-            {/* Widget invisível com as mesmas proporções de um item da feira para evitar corte na rolagem */}
-            <div 
-              className="feira-item invisible-spacer-widget" 
-              aria-hidden="true" 
-            />
           </div>
 
           {isComplete && (

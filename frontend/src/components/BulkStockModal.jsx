@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { X, Save, Search, Boxes, CheckCircle2, TrendingUp, AlertTriangle } from 'lucide-react';
 
-export default function BulkStockModal({ 
-  isOpen, 
-  onClose, 
-  ingredientes = [], 
-  onSaveBulk, 
-  loading = false 
+export default function BulkStockModal({
+  isOpen,
+  onClose,
+  ingredientes = [],
+  onSaveBulk,
+  loading = false
 }) {
   const [stockValues, setStockValues] = useState({});
   const [filterQuery, setFilterQuery] = useState('');
@@ -60,8 +60,8 @@ export default function BulkStockModal({
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div 
-        className="modal-content bulk-stock-modal-dialog" 
+      <div
+        className="modal-content bulk-stock-modal-dialog"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="modal-header">
@@ -77,9 +77,9 @@ export default function BulkStockModal({
             </div>
           </div>
 
-          <button 
-            type="button" 
-            className="btn btn-secondary btn-icon-only" 
+          <button
+            type="button"
+            className="btn btn-secondary btn-icon-only"
             onClick={onClose}
             aria-label="Fechar"
             disabled={loading}
@@ -185,12 +185,6 @@ export default function BulkStockModal({
                   );
                 })
               )}
-
-              {/* Widget invisível com as mesmas proporções de um item de estoque para evitar corte na rolagem */}
-              <div 
-                className="bulk-stock-item-row invisible-spacer-widget" 
-                aria-hidden="true" 
-              />
             </div>
           </div>
 
@@ -200,17 +194,17 @@ export default function BulkStockModal({
             </span>
 
             <div style={{ display: 'flex', gap: '0.75rem', width: 'auto' }} className="modal-footer-btns">
-              <button 
-                type="button" 
-                className="btn btn-secondary" 
+              <button
+                type="button"
+                className="btn btn-secondary"
                 onClick={onClose}
                 disabled={loading}
               >
                 Cancelar
               </button>
 
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 className="btn btn-primary"
                 disabled={loading}
               >
