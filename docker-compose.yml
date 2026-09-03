@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: estoque_seu_raimundo
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=False
+      - SECRET_KEY=django-insecure-producao-seu-raimundo-estoque-chave-segura
+      - ALLOWED_HOSTS=*
+    volumes:
+      - app_data:/app/backend
+    restart: unless-stopped
+
+volumes:
+  app_data:

@@ -1,0 +1,86 @@
+[
+  {
+    "model": "estoque.ingrediente",
+    "pk": 1,
+    "fields": {
+      "nome": "Farinha",
+      "unidade": "Kg",
+      "meta": "50.00",
+      "estoque_atual": "38.00",
+      "vencido": false,
+      "faltou_no_meio_do_mes": false,
+      "consumo_real": null,
+      "observacao": "Farinha de trigo especial para pães e massas do restaurante"
+    }
+  },
+  {
+    "model": "estoque.ingrediente",
+    "pk": 2,
+    "fields": {
+      "nome": "Leite",
+      "unidade": "L",
+      "meta": "30.00",
+      "estoque_atual": "6.00",
+      "vencido": true,
+      "faltou_no_meio_do_mes": false,
+      "consumo_real": null,
+      "observacao": "Lote azedou antes da virada do mês, precisa descartar sobra e comprar meta cheia"
+    }
+  },
+  {
+    "model": "estoque.ingrediente",
+    "pk": 3,
+    "fields": {
+      "nome": "Ovo",
+      "unidade": "unidade",
+      "meta": "100.00",
+      "estoque_atual": "0.00",
+      "vencido": false,
+      "faltou_no_meio_do_mes": true,
+      "consumo_real": "100.00",
+      "observacao": "Acabou dia 18! Meta estava muito baixa. Comprar consumo + 20% gordurinha"
+    }
+  },
+  {
+    "model": "estoque.ingrediente",
+    "pk": 4,
+    "fields": {
+      "nome": "Açúcar",
+      "unidade": "Kg",
+      "meta": "20.00",
+      "estoque_atual": "20.00",
+      "vencido": false,
+      "faltou_no_meio_do_mes": false,
+      "consumo_real": null,
+      "observacao": "Estoque completo, não precisa comprar nada"
+    }
+  },
+  {
+    "model": "estoque.ingrediente",
+    "pk": 5,
+    "fields": {
+      "nome": "Manteiga",
+      "unidade": "Kg",
+      "meta": "15.00",
+      "estoque_atual": "7.50",
+      "vencido": false,
+      "faltou_no_meio_do_mes": false,
+      "consumo_real": null,
+      "observacao": "Consumo regular dentro do esperado"
+    }
+  },
+  {
+    "model": "estoque.ingrediente",
+    "pk": 6,
+    "fields": {
+      "nome": "Café",
+      "unidade": "Kg",
+      "meta": "10.00",
+      "estoque_atual": "0.00",
+      "vencido": false,
+      "faltou_no_meio_do_mes": true,
+      "consumo_real": "15.00",
+      "observacao": "Movimento aumentou muito no almoço, consumiu 15 Kg no mês"
+    }
+  }
+]
