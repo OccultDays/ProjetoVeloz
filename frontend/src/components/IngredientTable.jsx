@@ -1,12 +1,12 @@
 import React from 'react';
-import { 
-  Search, 
-  Plus, 
-  Edit2, 
-  Trash2, 
-  AlertOctagon, 
-  TrendingUp, 
-  CheckCircle2, 
+import {
+  Search,
+  Plus,
+  Edit2,
+  Trash2,
+  AlertOctagon,
+  TrendingUp,
+  CheckCircle2,
   AlertTriangle,
   Flame,
   ShoppingBag
@@ -53,7 +53,7 @@ export default function IngredientTable({
               id="search-ingredient-input"
               type="text"
               className="search-input"
-              placeholder="Buscar ingrediente ou observação..."
+              placeholder="Buscar ingrediente"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -155,8 +155,8 @@ export default function IngredientTable({
                     </td>
 
                     <td>
-                      <span style={{ 
-                        fontWeight: 600, 
+                      <span style={{
+                        fontWeight: 600,
                         color: 'var(--amber-light)',
                         background: 'rgba(245, 158, 11, 0.1)',
                         padding: '3px 8px',

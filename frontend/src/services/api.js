@@ -69,4 +69,7 @@ export const api = {
   // Dashboard & Histórico
   getDashboardStats: () => fetchApi('/dashboard/'),
   getHistorico: () => fetchApi('/historico/'),
+  deleteHistorico: (id) => fetchApi(`/historico/${id}/`, {
+    method: 'DELETE',
+  }),
 };

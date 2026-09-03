@@ -35,7 +35,7 @@ class IngredienteViewSet(viewsets.ModelViewSet):
         return Response(IngredienteSerializer(ingrediente).data)
 
 
-class RegistroCompraViewSet(viewsets.ReadOnlyModelViewSet):
+class RegistroCompraViewSet(viewsets.ModelViewSet):
     queryset = RegistroCompra.objects.all().order_by("-criado_em")
     serializer_class = RegistroCompraSerializer
 

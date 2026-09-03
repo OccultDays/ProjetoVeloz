@@ -163,6 +163,19 @@ export default function App() {
     }
   };
 
+  const handleDeleteHistorico = async (id) => {
+    try {
+      setLoading(true);
+      await api.deleteHistorico(id);
+      showToast('Lista apagada do histórico com sucesso!');
+      await loadData();
+    } catch (err) {
+      showToast(`Erro ao apagar histórico: ${err.message}`, 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div>
       <Navbar 
@@ -209,7 +222,11 @@ export default function App() {
         )}
 
         {activeTab === 'historico' && (
-          <HistoryView historico={historico} />
+          <HistoryView 
+            historico={historico} 
+            onDeleteHistorico={handleDeleteHistorico}
+            loading={loading}
+          />
         )}
       </main>
 
