@@ -119,25 +119,11 @@ export default function ShoppingListView({
                 Deseja salvar esta lista como histórico ou ajustar as metas?
               </span>
             </div>
-
-            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-              <button
-                id="btn-adjust-metas"
-                className="btn btn-secondary btn-sm"
-                onClick={onAtualizarMetas}
-                disabled={loading}
-                title="Aplica a nova meta com +20% para os itens que faltaram no mês"
-              >
-                <RefreshCw size={14} />
-                <span>Atualizar Metas (+20%)</span>
-              </button>
-
-            </div>
           </div>
 
           {/* Cards dos Itens com Justificativa das Regras */}
           <h3 style={{ marginBottom: '1rem', fontSize: '1.1rem' }}>
-            Detalhamento e Justificativas de Cálculo (Seu Raimundo)
+            Detalhamento e Justificativas de Cálculo:
           </h3>
 
           <div className="shopping-items-grid">
