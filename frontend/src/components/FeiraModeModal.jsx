@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { X, CheckSquare, Square, CheckCircle2, AlertCircle, Search } from 'lucide-react';
 
-export default function FeiraModeModal({ 
-  isOpen, 
-  onClose, 
-  itensParaComprar = [], 
+export default function FeiraModeModal({
+  isOpen,
+  onClose,
+  itensParaComprar = [],
   onConfirmarCompra,
-  loading = false 
+  loading = false
 }) {
   const [comprados, setComprados] = useState({});
   const [filterQuery, setFilterQuery] = useState('');
@@ -62,9 +62,9 @@ export default function FeiraModeModal({
 
   return (
     <div className="modal-overlay" onClick={() => !showConfirmDialog && onClose()}>
-      <div 
-        className="modal-content" 
-        style={{ position: 'relative' }} 
+      <div
+        className="modal-content"
+        style={{ position: 'relative' }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Aviso de Confirmação Integrado na Interface */}
@@ -104,14 +104,14 @@ export default function FeiraModeModal({
               Confirmar Compra dos Itens?
             </h3>
 
-            <p style={{ 
-              fontSize: '0.92rem', 
-              color: 'var(--text-secondary)', 
-              maxWidth: '440px', 
-              marginBottom: '1.75rem', 
-              lineHeight: 1.5 
+            <p style={{
+              fontSize: '0.92rem',
+              color: 'var(--text-secondary)',
+              maxWidth: '440px',
+              marginBottom: '1.75rem',
+              lineHeight: 1.5
             }}>
-              Você marcou todos os <strong>{totalItens} itens</strong> como comprados. 
+              Você marcou todos os <strong>{totalItens} itens</strong> como comprados.
               Tem certeza que deseja confirmar e <strong>atualizar o estoque automaticamente</strong> com as novas metas do Seu Raimundo?
             </p>
 
@@ -156,9 +156,9 @@ export default function FeiraModeModal({
             </div>
           </div>
 
-          <button 
-            type="button" 
-            className="btn btn-secondary btn-icon-only" 
+          <button
+            type="button"
+            className="btn btn-secondary btn-icon-only"
             onClick={onClose}
             aria-label="Fechar"
             disabled={showConfirmDialog || loading}
@@ -182,9 +182,9 @@ export default function FeiraModeModal({
           </div>
 
           {/* Barra de Progresso & Ações Rápidas */}
-          <div style={{ 
-            background: 'rgba(255, 255, 255, 0.04)', 
-            padding: '0.85rem 1rem', 
+          <div style={{
+            background: 'rgba(255, 255, 255, 0.04)',
+            padding: '0.85rem 1rem',
             borderRadius: 'var(--radius-md)',
             border: '1px solid var(--border-subtle)',
             display: 'flex',
@@ -221,11 +221,11 @@ export default function FeiraModeModal({
             </div>
 
             <div style={{ width: '100%', height: '8px', background: '#1f2937', borderRadius: '999px', overflow: 'hidden' }}>
-              <div style={{ 
-                width: `${progresso}%`, 
-                height: '100%', 
-                background: isComplete 
-                  ? 'var(--emerald-success)' 
+              <div style={{
+                width: `${progresso}%`,
+                height: '100%',
+                background: isComplete
+                  ? 'var(--emerald-success)'
                   : 'linear-gradient(90deg, var(--amber-primary), var(--emerald-success))',
                 transition: 'width 0.3s ease'
               }} />
@@ -265,8 +265,8 @@ export default function FeiraModeModal({
                       </div>
                     </div>
 
-                    <span style={{ 
-                      fontSize: '0.85rem', 
+                    <span style={{
+                      fontSize: '0.85rem',
                       fontWeight: 700,
                       color: isChecked ? 'var(--emerald-success)' : 'var(--amber-light)'
                     }}>
@@ -279,9 +279,9 @@ export default function FeiraModeModal({
           </div>
 
           {isComplete && (
-            <div style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
               gap: '0.75rem',
               background: 'rgba(16, 185, 129, 0.1)',
               border: '1px solid rgba(16, 185, 129, 0.3)',
@@ -313,10 +313,10 @@ export default function FeiraModeModal({
           </span>
 
           <div style={{ display: 'flex', gap: '0.75rem', width: 'auto' }} className="modal-footer-btns">
-            <button 
-              type="button" 
-              className="btn btn-secondary" 
-              onClick={onClose} 
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={onClose}
               disabled={loading || showConfirmDialog}
             >
               Cancelar
