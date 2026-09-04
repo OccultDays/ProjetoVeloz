@@ -213,7 +213,7 @@ export default function IngredientModal({ isOpen, onClose, onSave, editingItem }
                     <span>Acabou no meio do mês antes de terminar?</span>
                   </div>
                   <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '2px' }}>
-                    Regra do Seu Raimundo: A meta estava muito baixa. Comprará com base no que foi consumido + <strong>20% de gordurinha</strong>.
+                    Regra do Seu Raimundo: A meta estava muito baixa. Comprará com base no que foi consumido + <strong>20% de margem de segurança</strong>.
                   </p>
                 </div>
               </label>

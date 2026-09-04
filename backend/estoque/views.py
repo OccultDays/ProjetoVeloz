@@ -149,7 +149,7 @@ def confirmar_compra_atualizar_estoque(request):
     automaticamente o estoque:
     - Reposição normal: estoque volta para a meta.
     - Vencido: estoque é renovado na meta e o status vencido é desmarcado.
-    - Falta no mês: estoque é abastecido com a nova meta (+20% gordura),
+    - Falta no mês: estoque é abastecido com a nova meta (+20% de margem de segurança),
       a meta é atualizada e a flag de falta é desmarcada.
     - Salva um registro da compra no histórico.
     """

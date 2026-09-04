@@ -112,42 +112,12 @@ export default function App() {
     try {
       const updated = await api.toggleFaltaMes(id);
       const statusText = updated.faltou_no_meio_do_mes 
-        ? 'marcado com falta no mês (+20% de gordurinha aplicado)' 
+        ? 'marcado com falta no mês (+20% de margem de segurança aplicada)' 
         : 'desmarcado de falta no mês';
       showToast(`"${updated.nome}" ${statusText}.`);
       loadData();
     } catch (err) {
       showToast(`Erro ao atualizar status: ${err.message}`, 'error');
-    }
-  };
-
-  // Ações da Lista de Compras
-  const handleAtualizarMetas = async () => {
-    if (!window.confirm('Deseja atualizar a meta dos ingredientes que acabaram no meio do mês para a nova meta com +20% de margem?')) {
-      return;
-    }
-    try {
-      setLoading(true);
-      const res = await api.atualizarMetasAjustadas();
-      showToast(res.mensagem || 'Metas atualizadas com sucesso!');
-      loadData();
-    } catch (err) {
-      showToast(`Erro ao atualizar metas: ${err.message}`, 'error');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSalvarHistorico = async () => {
-    try {
-      setLoading(true);
-      await api.salvarHistoricoCompras();
-      showToast('Lista de compras arquivada no histórico com sucesso!');
-      loadData();
-    } catch (err) {
-      showToast(`Erro ao arquivar histórico: ${err.message}`, 'error');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -232,9 +202,6 @@ export default function App() {
           <ShoppingListView
             shoppingData={shoppingData}
             onOpenFeiraMode={() => setIsFeiraModalOpen(true)}
-            onAtualizarMetas={handleAtualizarMetas}
-            onSalvarHistorico={handleSalvarHistorico}
-            onRefresh={loadData}
             loading={loading}
           />
         )}

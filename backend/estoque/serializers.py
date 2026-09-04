@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Ingrediente, RegistroCompra
-from .services.calculo_reposicao import calcular_item_reposicao, formatar_quantidade
+from .services.calculo_reposicao import calcular_item_reposicao
 
 
 class IngredienteSerializer(serializers.ModelSerializer):

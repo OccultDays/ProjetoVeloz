@@ -4,8 +4,6 @@ import {
   Plus,
   Edit2,
   Trash2,
-  AlertOctagon,
-  TrendingUp,
   CheckCircle2,
   AlertTriangle,
   Flame,

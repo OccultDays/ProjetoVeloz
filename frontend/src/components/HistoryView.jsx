@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, CheckCircle, Trash2, AlertTriangle, X } from 'lucide-react';
+import { Calendar, CheckCircle, Trash2, AlertTriangle } from 'lucide-react';
 
 export default function HistoryView({ historico = [], onDeleteHistorico, loading = false }) {
   const [itemParaApagar, setItemParaApagar] = useState(null);
