@@ -3,12 +3,9 @@ import {
   Copy,
   Check,
   Smartphone,
-  RefreshCw,
-  Archive,
   AlertTriangle,
   Flame,
-  TrendingUp,
-  FileText
+  TrendingUp
 } from 'lucide-react';
 
 export default function ShoppingListView({
@@ -44,19 +41,6 @@ export default function ShoppingListView({
         </div>
 
         <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-          {onRefresh && (
-            <button
-              id="btn-refresh-shopping-list"
-              className="btn btn-secondary"
-              onClick={onRefresh}
-              disabled={loading}
-              title="Recarregar e atualizar a lista de compras com os dados atuais do estoque"
-            >
-              <RefreshCw size={16} />
-              <span>Atualizar Lista</span>
-            </button>
-          )}
-
           <button
             id="btn-copy-shopping-list"
             className="btn btn-primary"
