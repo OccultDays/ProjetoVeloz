@@ -20,6 +20,16 @@ DEBUG = os.environ.get('DEBUG', 'True').lower() in ('true', '1', 't')
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 
+CSRF_TRUSTED_ORIGINS = [
+    origem.strip()
+    for origem in os.environ.get(
+        'CSRF_TRUSTED_ORIGINS',
+        'https://*.onrender.com,https://*.railway.app,https://*.vercel.app,http://localhost:5173,http://127.0.0.1:5173,http://localhost:8000,http://127.0.0.1:8000'
+    ).split(',')
+    if origem.strip()
+]
+
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
