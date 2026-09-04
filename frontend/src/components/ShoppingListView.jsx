@@ -3,12 +3,9 @@ import {
   Copy,
   Check,
   Smartphone,
-  RefreshCw,
-  Archive,
   AlertTriangle,
   Flame,
-  TrendingUp,
-  FileText
+  TrendingUp
 } from 'lucide-react';
 
 export default function ShoppingListView({
@@ -44,19 +41,6 @@ export default function ShoppingListView({
         </div>
 
         <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-          {onRefresh && (
-            <button
-              id="btn-refresh-shopping-list"
-              className="btn btn-secondary"
-              onClick={onRefresh}
-              disabled={loading}
-              title="Recarregar e atualizar a lista de compras com os dados atuais do estoque"
-            >
-              <RefreshCw size={16} />
-              <span>Atualizar Lista</span>
-            </button>
-          )}
-
           <button
             id="btn-copy-shopping-list"
             className="btn btn-primary"
@@ -90,9 +74,6 @@ export default function ShoppingListView({
           {/* Saída Estrita do Desafio Técnico */}
           <div style={{ marginBottom: '1rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-              <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
-                SAÍDA CONFORME O EDITAL (UM ITEM POR LINHA):
-              </span>
               <span style={{ fontSize: '0.8rem', color: 'var(--amber-light)', fontWeight: 600 }}>
                 {total_itens_a_comprar} {total_itens_a_comprar === 1 ? 'item' : 'itens'} a comprar
               </span>
@@ -103,44 +84,9 @@ export default function ShoppingListView({
             </div>
           </div>
 
-          {/* Ações Avançadas */}
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            gap: '1rem',
-            background: 'rgba(255, 255, 255, 0.02)',
-            padding: '1rem 1.25rem',
-            borderRadius: 'var(--radius-md)',
-            border: '1px solid var(--border-subtle)',
-            marginBottom: '2rem'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <FileText size={18} color="var(--indigo-accent)" />
-              <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-                Deseja salvar esta lista como histórico ou ajustar as metas?
-              </span>
-            </div>
-
-            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-              <button
-                id="btn-adjust-metas"
-                className="btn btn-secondary btn-sm"
-                onClick={onAtualizarMetas}
-                disabled={loading}
-                title="Aplica a nova meta com +20% para os itens que faltaram no mês"
-              >
-                <RefreshCw size={14} />
-                <span>Atualizar Metas (+20%)</span>
-              </button>
-
-            </div>
-          </div>
-
           {/* Cards dos Itens com Justificativa das Regras */}
           <h3 style={{ marginBottom: '1rem', fontSize: '1.1rem' }}>
-            Detalhamento e Justificativas de Cálculo (Seu Raimundo)
+            Detalhamento e Justificativas de Cálculo:
           </h3>
 
           <div className="shopping-items-grid">
