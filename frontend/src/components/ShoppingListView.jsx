@@ -90,9 +90,6 @@ export default function ShoppingListView({
           {/* Saída Estrita do Desafio Técnico */}
           <div style={{ marginBottom: '1rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-              <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
-                SAÍDA CONFORME O EDITAL (UM ITEM POR LINHA):
-              </span>
               <span style={{ fontSize: '0.8rem', color: 'var(--amber-light)', fontWeight: 600 }}>
                 {total_itens_a_comprar} {total_itens_a_comprar === 1 ? 'item' : 'itens'} a comprar
               </span>
