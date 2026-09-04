@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Save, Search } from 'lucide-react';
+import { X, Save, Search, Boxes, CheckCircle2, TrendingUp, AlertTriangle } from 'lucide-react';
 
 export default function BulkStockModal({
   isOpen,

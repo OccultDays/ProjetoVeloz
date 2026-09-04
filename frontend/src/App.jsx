@@ -16,7 +16,7 @@ export default function App() {
   const [shoppingData, setShoppingData] = useState(null);
   const [stats, setStats] = useState({});
   const [historico, setHistorico] = useState([]);
-  
+
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('todos');
 
@@ -111,13 +111,43 @@ export default function App() {
   const handleToggleFaltaMes = async (id) => {
     try {
       const updated = await api.toggleFaltaMes(id);
-      const statusText = updated.faltou_no_meio_do_mes 
-        ? 'marcado com falta no mês (+20% de margem de segurança aplicada)' 
+      const statusText = updated.faltou_no_meio_do_mes
+        ? 'marcado com falta no mês (+20% de gordurinha aplicado)'
         : 'desmarcado de falta no mês';
       showToast(`"${updated.nome}" ${statusText}.`);
       loadData();
     } catch (err) {
       showToast(`Erro ao atualizar status: ${err.message}`, 'error');
+    }
+  };
+
+  // Ações da Lista de Compras
+  const handleAtualizarMetas = async () => {
+    if (!window.confirm('Deseja atualizar a meta dos ingredientes que acabaram no meio do mês para a nova meta com +20% de margem?')) {
+      return;
+    }
+    try {
+      setLoading(true);
+      const res = await api.atualizarMetasAjustadas();
+      showToast(res.mensagem || 'Metas atualizadas com sucesso!');
+      loadData();
+    } catch (err) {
+      showToast(`Erro ao atualizar metas: ${err.message}`, 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSalvarHistorico = async () => {
+    try {
+      setLoading(true);
+      await api.salvarHistoricoCompras();
+      showToast('Lista de compras arquivada no histórico com sucesso!');
+      loadData();
+    } catch (err) {
+      showToast(`Erro ao arquivar histórico: ${err.message}`, 'error');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -164,16 +194,16 @@ export default function App() {
 
   return (
     <div>
-      <Navbar 
-        activeTab={activeTab} 
-        setActiveTab={setActiveTab} 
+      <Navbar
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
         totalParaComprar={stats.total_para_comprar || 0}
       />
 
       <main className="app-container">
         {/* KPI Cards em destaque */}
-        <MetricCards 
-          stats={stats} 
+        <MetricCards
+          stats={stats}
           onSelectFilter={(statusKey) => {
             setFilterStatus(statusKey);
             setActiveTab('estoque');
@@ -202,13 +232,16 @@ export default function App() {
           <ShoppingListView
             shoppingData={shoppingData}
             onOpenFeiraMode={() => setIsFeiraModalOpen(true)}
+            onAtualizarMetas={handleAtualizarMetas}
+            onSalvarHistorico={handleSalvarHistorico}
+            onRefresh={loadData}
             loading={loading}
           />
         )}
 
         {activeTab === 'historico' && (
-          <HistoryView 
-            historico={historico} 
+          <HistoryView
+            historico={historico}
             onDeleteHistorico={handleDeleteHistorico}
             loading={loading}
           />

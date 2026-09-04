@@ -1,5 +1,5 @@
 import React from 'react';
-import { UtensilsCrossed, ShoppingBag, History } from 'lucide-react';
+import { UtensilsCrossed, ShoppingBag, ClipboardList, History } from 'lucide-react';
 
 export default function Navbar({ activeTab, setActiveTab, totalParaComprar }) {
   return (

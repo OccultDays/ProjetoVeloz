@@ -4,8 +4,8 @@ import { Package, ShoppingCart, AlertTriangle, Flame } from 'lucide-react';
 export default function MetricCards({ stats, onSelectFilter }) {
   return (
     <section className="metrics-grid" aria-label="Indicadores principais de estoque">
-      <div 
-        className="metric-card" 
+      <div
+        className="metric-card"
         style={{ cursor: 'pointer' }}
         onClick={() => onSelectFilter('todos')}
       >
@@ -19,8 +19,8 @@ export default function MetricCards({ stats, onSelectFilter }) {
         </div>
       </div>
 
-      <div 
-        className="metric-card" 
+      <div
+        className="metric-card"
         style={{ cursor: 'pointer' }}
         onClick={() => onSelectFilter('comprar')}
       >
@@ -36,8 +36,8 @@ export default function MetricCards({ stats, onSelectFilter }) {
         </div>
       </div>
 
-      <div 
-        className="metric-card" 
+      <div
+        className="metric-card"
         style={{ cursor: 'pointer' }}
         onClick={() => onSelectFilter('vencidos')}
       >
@@ -53,8 +53,8 @@ export default function MetricCards({ stats, onSelectFilter }) {
         </div>
       </div>
 
-      <div 
-        className="metric-card" 
+      <div
+        className="metric-card"
         style={{ cursor: 'pointer' }}
         onClick={() => onSelectFilter('faltaram')}
       >
@@ -63,7 +63,7 @@ export default function MetricCards({ stats, onSelectFilter }) {
           <div className="metric-value" style={{ color: 'var(--orange-warning)' }}>
             {stats.total_faltaram || 0}
           </div>
-          <div className="metric-desc">Meta baixa; +20% de margem de segurança</div>
+          <div className="metric-desc">Meta baixa; +20% de gordurinha</div>
         </div>
         <div className="metric-icon-box orange">
           <Flame size={22} />

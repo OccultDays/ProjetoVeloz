@@ -83,9 +83,9 @@ export default function IngredientModal({ isOpen, onClose, onSave, editingItem }
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>{editingItem ? 'Editar Ingrediente' : 'Novo Ingrediente'}</h2>
-          <button 
-            type="button" 
-            className="btn btn-secondary btn-icon-only" 
+          <button
+            type="button"
+            className="btn btn-secondary btn-icon-only"
             onClick={onClose}
             aria-label="Fechar modal"
           >
@@ -200,8 +200,8 @@ export default function IngredientModal({ isOpen, onClose, onSave, editingItem }
                   checked={formData.faltou_no_meio_do_mes}
                   onChange={(e) => {
                     const checked = e.target.checked;
-                    setFormData({ 
-                      ...formData, 
+                    setFormData({
+                      ...formData,
                       faltou_no_meio_do_mes: checked,
                       estoque_atual: checked ? '0' : formData.estoque_atual
                     });
@@ -213,14 +213,14 @@ export default function IngredientModal({ isOpen, onClose, onSave, editingItem }
                     <span>Acabou no meio do mês antes de terminar?</span>
                   </div>
                   <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '2px' }}>
-                    Regra do Seu Raimundo: A meta estava muito baixa. Comprará com base no que foi consumido + <strong>20% de margem de segurança</strong>.
+                    Regra do Seu Raimundo: A meta estava muito baixa. Comprará com base no que foi consumido + <strong>20% de gordurinha</strong>.
                   </p>
                 </div>
               </label>
 
               {formData.faltou_no_meio_do_mes && (
-                <div className="form-group" style={{ 
-                  background: 'rgba(249, 115, 22, 0.08)', 
+                <div className="form-group" style={{
+                  background: 'rgba(249, 115, 22, 0.08)',
                   border: '1px solid rgba(249, 115, 22, 0.25)',
                   padding: '0.85rem',
                   borderRadius: 'var(--radius-md)'

@@ -4,6 +4,8 @@ import {
   Plus,
   Edit2,
   Trash2,
+  AlertOctagon,
+  TrendingUp,
   CheckCircle2,
   AlertTriangle,
   Flame,
@@ -295,9 +297,9 @@ export default function IngredientTable({
             }
 
             return (
-              <div 
-                key={item.id} 
-                className="mobile-ingredient-card" 
+              <div
+                key={item.id}
+                className="mobile-ingredient-card"
                 id={`card-mobile-ingrediente-${item.id}`}
               >
                 {/* Header do Card Mobile */}
@@ -351,8 +353,8 @@ export default function IngredientTable({
 
                   <div className="mobile-stat-box">
                     <span className="mobile-stat-label">Estoque Atual</span>
-                    <span 
-                      className="mobile-stat-value" 
+                    <span
+                      className="mobile-stat-value"
                       style={{ color: item.estoque_atual <= 0 ? 'var(--rose-danger)' : 'inherit' }}
                     >
                       {calc.estoque_atual !== undefined ? parseFloat(calc.estoque_atual).toString() : item.estoque_atual} {item.unidade}
@@ -361,7 +363,7 @@ export default function IngredientTable({
 
                   <div className={`mobile-stat-box ${deveComprar ? 'highlight' : ''}`}>
                     <span className="mobile-stat-label">A Comprar</span>
-                    <span 
+                    <span
                       className="mobile-stat-value"
                       style={{ color: deveComprar ? 'var(--amber-primary)' : 'var(--text-muted)', fontWeight: 700 }}
                     >
@@ -396,16 +398,16 @@ export default function IngredientTable({
         )}
 
         {/* Widget invisível com as mesmas proporções de um card de ingrediente para evitar cortes na rolagem inferior */}
-        <div 
-          className="mobile-ingredient-card invisible-spacer-widget" 
+        <div
+          className="mobile-ingredient-card invisible-spacer-widget"
           aria-hidden="true"
         />
       </div>
 
       {/* Widget invisível de compensação geral no rodapé */}
-      <div 
-        className="invisible-spacer-widget desktop-table-view" 
-        aria-hidden="true" 
+      <div
+        className="invisible-spacer-widget desktop-table-view"
+        aria-hidden="true"
       />
     </div>
   );

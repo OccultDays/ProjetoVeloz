@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, CheckCircle, Trash2, AlertTriangle } from 'lucide-react';
+import { Calendar, CheckCircle, Trash2, AlertTriangle, X } from 'lucide-react';
 
 export default function HistoryView({ historico = [], onDeleteHistorico, loading = false }) {
   const [itemParaApagar, setItemParaApagar] = useState(null);
@@ -15,8 +15,8 @@ export default function HistoryView({ historico = [], onDeleteHistorico, loading
       {/* Aviso de Confirmação Integrado na Interface (Substitui window.confirm) */}
       {itemParaApagar && (
         <div className="modal-overlay" onClick={() => setItemParaApagar(null)}>
-          <div 
-            className="modal-content" 
+          <div
+            className="modal-content"
             style={{ maxWidth: '480px', textAlign: 'center', padding: '2rem' }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -40,11 +40,11 @@ export default function HistoryView({ historico = [], onDeleteHistorico, loading
               Apagar Lista do Histórico?
             </h3>
 
-            <p style={{ 
-              fontSize: '0.9rem', 
-              color: 'var(--text-secondary)', 
-              marginBottom: '1.75rem', 
-              lineHeight: 1.5 
+            <p style={{
+              fontSize: '0.9rem',
+              color: 'var(--text-secondary)',
+              marginBottom: '1.75rem',
+              lineHeight: 1.5
             }}>
               Tem certeza que deseja apagar a lista de compras arquivada em{' '}
               <strong style={{ color: '#ffffff' }}>{itemParaApagar.data_formatada}</strong> ({itemParaApagar.total_itens} itens)? Esta ação removerá o registro permanentemente do sistema.
@@ -109,13 +109,13 @@ export default function HistoryView({ historico = [], onDeleteHistorico, loading
                 transition: 'border-color 0.2s ease',
               }}
             >
-              <div style={{ 
-                display: 'flex', 
-                justifyContent: 'space-between', 
-                alignItems: 'center', 
-                marginBottom: '0.75rem', 
-                flexWrap: 'wrap', 
-                gap: '0.75rem' 
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '0.75rem',
+                flexWrap: 'wrap',
+                gap: '0.75rem'
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <Calendar size={16} color="var(--amber-primary)" />

@@ -11,6 +11,9 @@ import {
 export default function ShoppingListView({
   shoppingData,
   onOpenFeiraMode,
+  onAtualizarMetas,
+  onSalvarHistorico,
+  onRefresh,
   loading,
 }) {
   const [copied, setCopied] = useState(false);
