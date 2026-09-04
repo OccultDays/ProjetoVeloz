@@ -4,7 +4,6 @@ import {
   CheckSquare, 
   Square, 
   CheckCircle2, 
-  AlertCircle, 
   Search, 
   ShoppingBag, 
   Sparkles, 
@@ -20,17 +19,26 @@ export default function FeiraModeModal({
   loading = false 
 }) {
   const [comprados, setComprados] = useState({});
-  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [exibirConfirmacao, setExibirConfirmacao] = useState(false);
   const [termoBusca, setTermoBusca] = useState('');
   const [abaAtiva, setAbaAtiva] = useState('todos'); // 'todos' | 'pendentes' | 'comprados'
 
-  // Reseta estados ao fechar ou reabrir o modal
+  // Trava a rolagem da página de fundo quando o modal estiver aberto no mobile
   useEffect(() => {
-    if (!isOpen) {
-      setShowConfirmDialog(false);
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.touchAction = 'none';
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
+      setExibirConfirmacao(false);
       setTermoBusca('');
       setAbaAtiva('todos');
     }
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
+    };
   }, [isOpen]);
 
   if (!isOpen) return null;
@@ -39,12 +47,12 @@ export default function FeiraModeModal({
   const totalComprados = Object.values(comprados).filter(Boolean).length;
   const totalPendentes = totalItens - totalComprados;
   const progresso = totalItens > 0 ? Math.round((totalComprados / totalItens) * 100) : 0;
-  const isComplete = progresso === 100 && totalItens > 0;
+  const estaCompleto = progresso === 100 && totalItens > 0;
 
-  const toggleComprado = (id) => {
-    setComprados((prev) => ({
-      ...prev,
-      [id]: !prev[id],
+  const alternarComprado = (identificador) => {
+    setComprados((anterior) => ({
+      ...anterior,
+      [identificador]: !anterior[identificador],
     }));
   };
 
@@ -61,12 +69,12 @@ export default function FeiraModeModal({
   };
 
   const handleOpenConfirm = () => {
-    if (!isComplete || loading) return;
-    setShowConfirmDialog(true);
+    if (!estaCompleto || loading) return;
+    setExibirConfirmacao(true);
   };
 
   const handleExecutarConfirmacao = () => {
-    setShowConfirmDialog(false);
+    setExibirConfirmacao(false);
     onConfirmarCompra();
   };
 
@@ -93,14 +101,14 @@ export default function FeiraModeModal({
   }, [itensParaComprar, comprados, abaAtiva, termoBusca]);
 
   return (
-    <div className="modal-overlay" onClick={() => !showConfirmDialog && onClose()}>
+    <div className="modal-overlay" onClick={() => !exibirConfirmacao && onClose()}>
       <div 
         id="modal-lista-interativa-conteudo"
         className="modal-content modal-lista-interativa" 
         onClick={(e) => e.stopPropagation()}
       >
         {/* Diálogo de Confirmação Integrado na Interface (Touch-Friendly) */}
-        {showConfirmDialog && (
+        {exibirConfirmacao && (
           <div 
             id="dialogo-confirmacao-compra"
             className="dialogo-confirmacao-interativo"
@@ -134,7 +142,7 @@ export default function FeiraModeModal({
                 id="btn-cancelar-aviso-confirmacao"
                 type="button"
                 className="btn btn-secondary btn-touch-largo"
-                onClick={() => setShowConfirmDialog(false)}
+                onClick={() => setExibirConfirmacao(false)}
                 disabled={loading}
               >
                 Voltar ao Checklist
@@ -166,7 +174,7 @@ export default function FeiraModeModal({
             className="btn btn-secondary btn-icon-only" 
             onClick={onClose}
             aria-label="Fechar Lista Interativa"
-            disabled={showConfirmDialog || loading}
+            disabled={exibirConfirmacao || loading}
           >
             <X size={20} />
           </button>
@@ -177,17 +185,17 @@ export default function FeiraModeModal({
           {/* Indicador visual de progresso */}
           <div className="topo-progresso-interativa">
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <ShoppingBag size={16} color={isComplete ? 'var(--emerald-success)' : 'var(--amber-light)'} />
+              <ShoppingBag size={16} color={estaCompleto ? 'var(--emerald-success)' : 'var(--amber-light)'} />
               <span style={{ fontSize: '0.86rem', fontWeight: 600 }}>Progresso</span>
             </div>
-            <strong className={`texto-progresso-contador ${isComplete ? 'concluido' : ''}`}>
+            <strong className={`texto-progresso-contador ${estaCompleto ? 'concluido' : ''}`}>
               {totalComprados} de {totalItens} ({progresso}%)
             </strong>
           </div>
 
           <div className="barra-progresso-trilho">
             <div 
-              className={`barra-progresso-preenchimento ${isComplete ? 'completo' : ''}`}
+              className={`barra-progresso-preenchimento ${estaCompleto ? 'completo' : ''}`}
               style={{ width: `${progresso}%` }} 
             />
           </div>
@@ -272,8 +280,11 @@ export default function FeiraModeModal({
           )}
         </div>
 
-        {/* 3. Corpo Rolável com os Cards Touch-First */}
-        <div className="corpo-rolavel-interativa">
+        {/* 3. Corpo Rolável com os Cards Touch-First (Scroll Nativo Perfeito no Celular) */}
+        <div 
+          id="corpo-rolavel-lista-interativa"
+          className="corpo-rolavel-interativa"
+        >
           {itensFiltrados.length === 0 ? (
             <div className="estado-vazio-interativo">
               <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🔍</div>
@@ -295,17 +306,20 @@ export default function FeiraModeModal({
             <div className="lista-itens-interativa">
               {itensFiltrados.map((item, idx) => {
                 const idItem = item.id || idx;
-                const isChecked = !!comprados[idItem];
+                const estaMarcado = !!comprados[idItem];
 
                 return (
                   <div
                     key={idItem}
-                    className={`card-item-interativo ${isChecked ? 'item-marcado' : ''}`}
-                    onClick={() => toggleComprado(idItem)}
+                    id={`item-interativo-${idItem}`}
+                    className={`card-item-interativo ${estaMarcado ? 'item-marcado' : ''}`}
+                    onClick={() => alternarComprado(idItem)}
+                    role="button"
+                    tabIndex={0}
                   >
                     {/* Checkbox Touch Amplo */}
                     <div className="checkbox-touch-area">
-                      {isChecked ? (
+                      {estaMarcado ? (
                         <CheckSquare size={26} color="var(--emerald-success)" />
                       ) : (
                         <Square size={26} color="var(--text-muted)" />
@@ -341,7 +355,7 @@ export default function FeiraModeModal({
                     </div>
 
                     {/* Badge da Quantidade a Comprar */}
-                    <div className={`badge-quantidade-interativa ${isChecked ? 'quantidade-marcada' : ''}`}>
+                    <div className={`badge-quantidade-interativa ${estaMarcado ? 'quantidade-marcada' : ''}`}>
                       <span className="valor-quantidade">
                         {item.quantidade_formatada}
                       </span>
@@ -356,7 +370,7 @@ export default function FeiraModeModal({
           )}
 
           {/* Banner Comemorativo de 100% Concluído */}
-          {isComplete && (
+          {estaCompleto && (
             <div className="banner-sucesso-interativo">
               <div className="banner-sucesso-icone">
                 <CheckCircle2 size={26} />
@@ -365,22 +379,22 @@ export default function FeiraModeModal({
                 <strong style={{ color: 'var(--emerald-success)', fontSize: '0.96rem', display: 'block', marginBottom: '2px' }}>
                   Todos os itens comprados! 🎉
                 </strong>
-                <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+                <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
                   Tudo pronto. Toque em <strong>Confirmar</strong> abaixo para atualizar automaticamente o estoque do restaurante.
                 </p>
               </div>
             </div>
           )}
 
-          {/* Espaçador invisível para não cortar o último card em telas pequenas */}
-          <div className="espacador-inferior-interativo" />
+          {/* Espaçador invisível para rolagem confortável sem cortes no mobile */}
+          <div className="espacador-inferior-interativo" aria-hidden="true" />
         </div>
 
         {/* 4. Rodapé Fixo Touch-First com Safe Area */}
         <div className="modal-footer rodape-lista-interativa">
           <div className="rodape-status-linha">
             <span className="texto-status-rodape">
-              {isComplete ? (
+              {estaCompleto ? (
                 <span style={{ color: 'var(--emerald-success)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
                   <Check size={15} /> 100% no carrinho
                 </span>
@@ -398,7 +412,7 @@ export default function FeiraModeModal({
               type="button" 
               className="btn btn-secondary btn-touch-rodape" 
               onClick={onClose} 
-              disabled={loading || showConfirmDialog}
+              disabled={loading || exibirConfirmacao}
             >
               Fechar
             </button>
@@ -406,13 +420,13 @@ export default function FeiraModeModal({
             <button
               id="btn-confirmar-estoque"
               type="button"
-              className={`btn btn-success btn-touch-rodape btn-confirmar-interativa ${isComplete ? 'pulsar-destaque' : ''}`}
+              className={`btn btn-success btn-touch-rodape btn-confirmar-interativa ${estaCompleto ? 'pulsar-destaque' : ''}`}
               onClick={handleOpenConfirm}
-              disabled={!isComplete || loading}
-              title={isComplete ? 'Confirmar e atualizar estoque' : 'Marque todos os itens para liberar a confirmação'}
+              disabled={!estaCompleto || loading}
+              title={estaCompleto ? 'Confirmar e atualizar estoque' : 'Marque todos os itens para liberar a confirmação'}
             >
               <CheckCircle2 size={19} />
-              <span>{loading ? 'Atualizando...' : isComplete ? 'Confirmar e Atualizar' : 'Confirmar'}</span>
+              <span>{loading ? 'Atualizando...' : estaCompleto ? 'Confirmar e Atualizar' : 'Confirmar'}</span>
             </button>
           </div>
         </div>

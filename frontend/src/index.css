@@ -1305,7 +1305,9 @@ button, input, select, textarea {
   width: 100%;
   display: flex !important;
   flex-direction: column !important;
+  height: 88vh;
   max-height: 88vh;
+  max-height: 88dvh;
   position: relative;
   overflow: hidden !important;
   border: 1px solid var(--border-card);
@@ -1480,15 +1482,37 @@ button, input, select, textarea {
   color: #fff;
 }
 
-/* Corpo Rolável dos Itens */
+/* Corpo Rolável dos Itens (Rolagem Suave no Mobile e Desktop) */
 .corpo-rolavel-interativa {
-  flex: 1 1 auto;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  flex: 1 1 0% !important;
+  min-height: 0 !important;
+  height: 100%;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior-y: contain !important;
+  touch-action: pan-y !important;
   padding: 1.15rem 1.4rem;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+}
+
+/* Custom Scrollbar elegante para a lista */
+.corpo-rolavel-interativa::-webkit-scrollbar {
+  width: 6px;
+}
+
+.corpo-rolavel-interativa::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.corpo-rolavel-interativa::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+}
+
+.corpo-rolavel-interativa::-webkit-scrollbar-thumb:hover {
+  background: var(--amber-primary);
 }
 
 .lista-itens-interativa {
@@ -1509,6 +1533,7 @@ button, input, select, textarea {
   cursor: pointer;
   transition: all 0.2s ease;
   user-select: none;
+  touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -1805,94 +1830,133 @@ button, input, select, textarea {
 
   .modal-lista-interativa {
     max-width: 100% !important;
-    height: 94dvh !important;
-    max-height: 94dvh !important;
-    border-radius: 24px 24px 0 0 !important;
+    width: 100% !important;
+    height: 92dvh !important;
+    max-height: 92dvh !important;
+    border-radius: 20px 20px 0 0 !important;
     margin: 0 !important;
     border-bottom: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
   }
 
   .cabecalho-lista-interativa {
-    padding: 0.9rem 1.15rem;
+    flex: 0 0 auto !important;
+    padding: 0.75rem 1rem !important;
   }
 
   .secao-progresso-interativa {
-    padding: 0.85rem 1.15rem;
-    gap: 0.65rem;
-  }
-
-  .abas-filtro-interativa {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .btn-aba-filtro {
-    flex: 1;
-    text-align: center;
-    padding: 0.45rem 0.2rem;
-    font-size: 0.74rem;
+    flex: 0 0 auto !important;
+    padding: 0.65rem 1rem 0.6rem !important;
+    gap: 0.5rem !important;
   }
 
   .barra-controles-interativa {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.5rem;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 0.4rem !important;
+  }
+
+  .abas-filtro-interativa {
+    display: flex !important;
+    flex: 1 !important;
+    gap: 0.25rem !important;
+  }
+
+  .btn-aba-filtro {
+    flex: 1 !important;
+    text-align: center !important;
+    padding: 0.35rem 0.2rem !important;
+    font-size: 0.72rem !important;
+    white-space: nowrap !important;
   }
 
   .acoes-rapidas-interativa {
-    justify-content: flex-end;
+    flex: 0 0 auto;
   }
 
+  .link-acao-rapida {
+    font-size: 0.74rem;
+    padding: 3px 6px;
+  }
+
+  .campo-busca-interativa {
+    padding: 0.35rem 0.65rem;
+  }
+
+  .campo-busca-interativa input {
+    font-size: 0.82rem;
+  }
+
+  /* Corpo Rolável Garantido no Mobile com Touch-Action e Momentum */
   .corpo-rolavel-interativa {
-    padding: 0.85rem 1.15rem;
-    gap: 0.65rem;
+    flex: 1 1 0% !important;
+    min-height: 0 !important;
+    height: auto !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior-y: contain !important;
+    touch-action: pan-y !important;
+    padding: 0.75rem 1rem !important;
+    gap: 0.65rem !important;
   }
 
   .card-item-interativo {
-    padding: 0.9rem 1rem;
-    min-height: 64px;
+    padding: 0.85rem 0.95rem !important;
+    min-height: 58px !important;
+    touch-action: manipulation;
   }
 
   .nome-item-interativo {
-    font-size: 1rem;
+    font-size: 0.98rem !important;
   }
 
   .badge-quantidade-interativa {
-    padding: 0.35rem 0.6rem;
+    padding: 0.35rem 0.55rem !important;
   }
 
   .valor-quantidade {
-    font-size: 0.98rem;
+    font-size: 0.95rem !important;
   }
 
   .espacador-inferior-interativo {
-    height: 35px;
+    height: 45px !important;
+    min-height: 45px !important;
+    flex-shrink: 0;
   }
 
+  /* Rodapé Fixo e Compacto no Mobile com Botões Lado a Lado */
   .rodape-lista-interativa {
-    padding: 0.85rem 1.15rem max(0.85rem, env(safe-area-inset-bottom, 16px));
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.75rem;
+    flex: 0 0 auto !important;
+    padding: 0.75rem 1rem max(0.85rem, env(safe-area-inset-bottom, 16px)) 1rem !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.55rem !important;
+    background: rgba(17, 24, 39, 0.95) !important;
+    border-top: 1px solid var(--border-subtle) !important;
   }
 
   .rodape-status-linha {
     text-align: center;
-    font-size: 0.82rem;
+    font-size: 0.8rem;
   }
 
+  /* Botões lado a lado no celular para economizar 50px de tela vertical */
   .rodape-botoes-container {
-    display: flex;
-    flex-direction: column-reverse;
-    width: 100%;
-    gap: 0.55rem;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    width: 100% !important;
+    gap: 0.65rem !important;
   }
 
   .btn-touch-rodape {
-    width: 100%;
-    min-height: 48px;
-    font-size: 0.95rem;
-    justify-content: center;
+    width: 100% !important;
+    min-height: 46px !important;
+    font-size: 0.92rem !important;
+    justify-content: center !important;
   }
 
   .botoes-confirmacao-interativo {
