@@ -1,15 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { 
-  X, 
-  CheckSquare, 
-  Square, 
-  CheckCircle2, 
-  Search, 
-  ShoppingBag, 
-  Sparkles, 
-  Check, 
-  RotateCcw 
-} from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, CheckSquare, Square, CheckCircle2, AlertCircle, Search } from 'lucide-react';
 
 export default function FeiraModeModal({ 
   isOpen, 
@@ -19,414 +9,333 @@ export default function FeiraModeModal({
   loading = false 
 }) {
   const [comprados, setComprados] = useState({});
-  const [exibirConfirmacao, setExibirConfirmacao] = useState(false);
-  const [termoBusca, setTermoBusca] = useState('');
-  const [abaAtiva, setAbaAtiva] = useState('todos'); // 'todos' | 'pendentes' | 'comprados'
+  const [filterQuery, setFilterQuery] = useState('');
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
-  // Trava a rolagem da página de fundo quando o modal estiver aberto no mobile
+  // Reseta estado ao abrir/fechar
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-      document.body.style.touchAction = 'none';
-    } else {
-      document.body.style.overflow = '';
-      document.body.style.touchAction = '';
-      setExibirConfirmacao(false);
-      setTermoBusca('');
-      setAbaAtiva('todos');
+    if (!isOpen) {
+      setShowConfirmDialog(false);
+      setFilterQuery('');
     }
-    return () => {
-      document.body.style.overflow = '';
-      document.body.style.touchAction = '';
-    };
   }, [isOpen]);
 
   if (!isOpen) return null;
 
-  const totalItens = itensParaComprar.length;
-  const totalComprados = Object.values(comprados).filter(Boolean).length;
-  const totalPendentes = totalItens - totalComprados;
-  const progresso = totalItens > 0 ? Math.round((totalComprados / totalItens) * 100) : 0;
-  const estaCompleto = progresso === 100 && totalItens > 0;
-
-  const alternarComprado = (identificador) => {
-    setComprados((anterior) => ({
-      ...anterior,
-      [identificador]: !anterior[identificador],
+  const toggleComprado = (id) => {
+    setComprados((prev) => ({
+      ...prev,
+      [id]: !prev[id],
     }));
   };
 
   const handleMarcarTodos = () => {
-    const novoEstado = {};
+    const todos = {};
     itensParaComprar.forEach((item, idx) => {
-      novoEstado[item.id || idx] = true;
+      todos[item.id || idx] = true;
     });
-    setComprados(novoEstado);
+    setComprados(todos);
   };
 
   const handleDesmarcarTodos = () => {
     setComprados({});
   };
 
+  const totalComprados = Object.values(comprados).filter(Boolean).length;
+  const totalItens = itensParaComprar.length;
+  const progresso = totalItens > 0 ? Math.round((totalComprados / totalItens) * 100) : 0;
+  const isComplete = progresso === 100 && totalItens > 0;
+
   const handleOpenConfirm = () => {
-    if (!estaCompleto || loading) return;
-    setExibirConfirmacao(true);
+    if (!isComplete || loading) return;
+    setShowConfirmDialog(true);
   };
 
   const handleExecutarConfirmacao = () => {
-    setExibirConfirmacao(false);
+    setShowConfirmDialog(false);
     onConfirmarCompra();
   };
 
-  // Filtragem dos itens por busca e aba
-  const itensFiltrados = useMemo(() => {
-    return itensParaComprar.filter((item, idx) => {
-      const id = item.id || idx;
-      const marcado = !!comprados[id];
-
-      // Filtro da aba
-      if (abaAtiva === 'pendentes' && marcado) return false;
-      if (abaAtiva === 'comprados' && !marcado) return false;
-
-      // Filtro de texto da busca
-      if (termoBusca.trim()) {
-        const termo = termoBusca.toLowerCase();
-        const nomeMatch = (item.nome || '').toLowerCase().includes(termo);
-        const textoMatch = (item.texto_formatado || '').toLowerCase().includes(termo);
-        return nomeMatch || textoMatch;
-      }
-
-      return true;
-    });
-  }, [itensParaComprar, comprados, abaAtiva, termoBusca]);
+  const filteredItens = itensParaComprar.filter((item) =>
+    (item.nome || item.texto_formatado || '').toLowerCase().includes(filterQuery.toLowerCase())
+  );
 
   return (
-    <div className="modal-overlay" onClick={() => !exibirConfirmacao && onClose()}>
+    <div className="modal-overlay" onClick={() => !showConfirmDialog && onClose()}>
       <div 
-        id="modal-lista-interativa-conteudo"
-        className="modal-content modal-lista-interativa" 
+        className="modal-content" 
+        style={{ position: 'relative' }} 
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Diálogo de Confirmação Integrado na Interface (Touch-Friendly) */}
-        {exibirConfirmacao && (
-          <div 
-            id="dialogo-confirmacao-compra"
-            className="dialogo-confirmacao-interativo"
-          >
-            <div className="icone-alerta-confirmacao">
-              <Sparkles size={36} />
+        {/* Aviso de Confirmação Integrado na Interface */}
+        {showConfirmDialog && (
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'rgba(11, 15, 25, 0.96)',
+            backdropFilter: 'blur(10px)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '2rem',
+            zIndex: 30,
+            borderRadius: 'var(--radius-lg)',
+            animation: 'fadeIn 0.2s ease-out',
+            textAlign: 'center',
+          }}>
+            <div style={{
+              width: '60px',
+              height: '60px',
+              borderRadius: '50%',
+              background: 'rgba(16, 185, 129, 0.15)',
+              border: '1px solid rgba(16, 185, 129, 0.4)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginBottom: '1.25rem',
+              color: 'var(--emerald-success)',
+              boxShadow: '0 0 20px rgba(16, 185, 129, 0.25)'
+            }}>
+              <AlertCircle size={34} />
             </div>
 
-            <h3 className="titulo-confirmacao-interativo">
-              Confirmar Compras do Mês?
+            <h3 style={{ fontSize: '1.3rem', fontWeight: 700, marginBottom: '0.6rem', color: '#ffffff' }}>
+              Confirmar Compra dos Itens?
             </h3>
 
-            <p className="texto-confirmacao-interativo">
-              Você marcou todos os <strong>{totalItens} itens</strong> como comprados!
-              Ao confirmar, o sistema atualizará automaticamente o estoque com as quantidades repostas e as novas metas de segurança do Seu Raimundo.
+            <p style={{ 
+              fontSize: '0.92rem', 
+              color: 'var(--text-secondary)', 
+              maxWidth: '440px', 
+              marginBottom: '1.75rem', 
+              lineHeight: 1.5 
+            }}>
+              Você marcou todos os <strong>{totalItens} itens</strong> como comprados. 
+              Tem certeza que deseja confirmar e <strong>atualizar o estoque automaticamente</strong> com as novas metas do Seu Raimundo?
             </p>
 
-            <div className="botoes-confirmacao-interativo">
-              <button
-                id="btn-aceitar-aviso-confirmacao"
-                type="button"
-                className="btn btn-success btn-touch-largo"
-                onClick={handleExecutarConfirmacao}
-                disabled={loading}
-              >
-                <CheckCircle2 size={20} />
-                <span>{loading ? 'Atualizando...' : 'Sim, Atualizar Estoque'}</span>
-              </button>
-
+            <div style={{ display: 'flex', gap: '1rem', width: '100%', maxWidth: '380px' }}>
               <button
                 id="btn-cancelar-aviso-confirmacao"
                 type="button"
-                className="btn btn-secondary btn-touch-largo"
-                onClick={() => setExibirConfirmacao(false)}
+                className="btn btn-secondary"
+                style={{ flex: 1, padding: '0.75rem 1rem' }}
+                onClick={() => setShowConfirmDialog(false)}
                 disabled={loading}
               >
-                Voltar ao Checklist
+                Cancelar
+              </button>
+
+              <button
+                id="btn-aceitar-aviso-confirmacao"
+                type="button"
+                className="btn btn-primary"
+                style={{ flex: 1, padding: '0.75rem 1rem' }}
+                onClick={handleExecutarConfirmacao}
+                disabled={loading}
+              >
+                <CheckCircle2 size={18} />
+                <span>{loading ? 'Atualizando...' : 'Sim, Atualizar'}</span>
               </button>
             </div>
           </div>
         )}
 
-        {/* 1. Cabeçalho Fixo do Modal */}
-        <div className="modal-header cabecalho-lista-interativa">
+        {/* Cabeçalho Padronizado */}
+        <div className="modal-header">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <div className="brand-logo-badge" style={{ width: '40px', height: '40px', fontSize: '1.25rem' }}>
+            <div className="brand-logo-badge" style={{ width: '38px', height: '38px', fontSize: '1.2rem' }}>
               🧺
             </div>
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <h2 style={{ fontSize: '1.15rem', fontWeight: 800 }}>Lista Interativa</h2>
-                <span className="badge-feira-mobile">Modo Feira</span>
-              </div>
+              <h2 style={{ fontSize: '1.15rem' }}>Lista Interativa</h2>
               <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
-                Checklist em tempo real para compras no mercado
+                Checklist dinâmico de compras com unidades de medida
               </p>
             </div>
           </div>
 
           <button 
-            id="btn-fechar-lista-interativa"
             type="button" 
             className="btn btn-secondary btn-icon-only" 
             onClick={onClose}
-            aria-label="Fechar Lista Interativa"
-            disabled={exibirConfirmacao || loading}
+            aria-label="Fechar"
+            disabled={showConfirmDialog || loading}
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 
-        {/* 2. Barra de Progresso e Filtros Fixos */}
-        <div className="secao-progresso-interativa">
-          {/* Indicador visual de progresso */}
-          <div className="topo-progresso-interativa">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <ShoppingBag size={16} color={estaCompleto ? 'var(--emerald-success)' : 'var(--amber-light)'} />
-              <span style={{ fontSize: '0.86rem', fontWeight: 600 }}>Progresso</span>
-            </div>
-            <strong className={`texto-progresso-contador ${estaCompleto ? 'concluido' : ''}`}>
-              {totalComprados} de {totalItens} ({progresso}%)
-            </strong>
-          </div>
-
-          <div className="barra-progresso-trilho">
-            <div 
-              className={`barra-progresso-preenchimento ${estaCompleto ? 'completo' : ''}`}
-              style={{ width: `${progresso}%` }} 
+        {/* Corpo com Rolagem e Filtro Interno */}
+        <div className="modal-body" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
+          {/* Busca interna */}
+          <div className="search-input-wrapper" style={{ width: '100%', minWidth: '100%', marginBottom: '0.75rem' }}>
+            <Search size={16} />
+            <input
+              type="text"
+              className="search-input"
+              placeholder="Filtrar ingredientes nesta lista..."
+              value={filterQuery}
+              onChange={(e) => setFilterQuery(e.target.value)}
             />
           </div>
 
-          {/* Abas e Busca para Mobile */}
-          <div className="barra-controles-interativa">
-            {/* Abas de Filtro Touch */}
-            <div className="abas-filtro-interativa">
-              <button
-                id="aba-filtro-todos"
-                type="button"
-                className={`btn-aba-filtro ${abaAtiva === 'todos' ? 'ativo' : ''}`}
-                onClick={() => setAbaAtiva('todos')}
-              >
-                Todos ({totalItens})
-              </button>
-              <button
-                id="aba-filtro-pendentes"
-                type="button"
-                className={`btn-aba-filtro ${abaAtiva === 'pendentes' ? 'ativo' : ''}`}
-                onClick={() => setAbaAtiva('pendentes')}
-              >
-                Pendentes ({totalPendentes})
-              </button>
-              <button
-                id="aba-filtro-comprados"
-                type="button"
-                className={`btn-aba-filtro ${abaAtiva === 'comprados' ? 'ativo' : ''}`}
-                onClick={() => setAbaAtiva('comprados')}
-              >
-                Comprados ({totalComprados})
-              </button>
+          {/* Barra de Progresso & Ações Rápidas */}
+          <div style={{ 
+            background: 'rgba(255, 255, 255, 0.04)', 
+            padding: '0.85rem 1rem', 
+            borderRadius: 'var(--radius-md)',
+            border: '1px solid var(--border-subtle)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.65rem'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.85rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+              <span>Progresso das Compras</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <strong style={{ color: isComplete ? 'var(--emerald-success)' : 'var(--amber-light)' }}>
+                  {totalComprados} de {totalItens} ({progresso}%)
+                </strong>
+                <div style={{ display: 'flex', gap: '4px' }}>
+                  <button
+                    type="button"
+                    className="btn btn-secondary btn-sm"
+                    style={{ padding: '0.25rem 0.55rem', fontSize: '0.72rem' }}
+                    onClick={handleMarcarTodos}
+                    title="Marcar todos os itens como comprados"
+                  >
+                    Todos
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-secondary btn-sm"
+                    style={{ padding: '0.25rem 0.55rem', fontSize: '0.72rem' }}
+                    onClick={handleDesmarcarTodos}
+                    title="Desmarcar todos os itens"
+                  >
+                    Limpar
+                  </button>
+                </div>
+              </div>
             </div>
 
-            {/* Ação rápida marcar/desmarcar todos */}
-            <div className="acoes-rapidas-interativa">
-              {totalComprados < totalItens ? (
-                <button
-                  type="button"
-                  className="link-acao-rapida"
-                  onClick={handleMarcarTodos}
-                >
-                  <Check size={13} />
-                  <span>Marcar todos</span>
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  className="link-acao-rapida"
-                  onClick={handleDesmarcarTodos}
-                >
-                  <RotateCcw size={13} />
-                  <span>Desmarcar todos</span>
-                </button>
-              )}
+            <div style={{ width: '100%', height: '8px', background: '#1f2937', borderRadius: '999px', overflow: 'hidden' }}>
+              <div style={{ 
+                width: `${progresso}%`, 
+                height: '100%', 
+                background: isComplete 
+                  ? 'var(--emerald-success)' 
+                  : 'linear-gradient(90deg, var(--amber-primary), var(--emerald-success))',
+                transition: 'width 0.3s ease'
+              }} />
             </div>
           </div>
 
-          {/* Campo de Busca Rápida Opcional */}
-          {totalItens > 4 && (
-            <div className="campo-busca-interativa">
-              <Search size={15} color="var(--text-muted)" />
-              <input
-                id="input-busca-lista-interativa"
-                type="text"
-                placeholder="Buscar ingrediente..."
-                value={termoBusca}
-                onChange={(e) => setTermoBusca(e.target.value)}
-              />
-              {termoBusca && (
-                <button
-                  id="btn-limpar-busca-interativa"
-                  type="button"
-                  className="btn-limpar-busca"
-                  onClick={() => setTermoBusca('')}
-                  aria-label="Limpar busca"
-                >
-                  <X size={14} />
-                </button>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* 3. Corpo Rolável com os Cards Touch-First (Scroll Nativo Perfeito no Celular) */}
-        <div 
-          id="corpo-rolavel-lista-interativa"
-          className="corpo-rolavel-interativa"
-        >
-          {itensFiltrados.length === 0 ? (
-            <div className="estado-vazio-interativo">
-              <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🔍</div>
-              <p style={{ fontWeight: 600, color: 'var(--text-secondary)' }}>
-                Nenhum ingrediente encontrado nesta visualização.
-              </p>
-              {termoBusca && (
-                <button 
-                  type="button" 
-                  className="btn btn-secondary btn-sm" 
-                  style={{ marginTop: '0.75rem' }}
-                  onClick={() => setTermoBusca('')}
-                >
-                  Limpar busca
-                </button>
-              )}
-            </div>
-          ) : (
-            <div className="lista-itens-interativa">
-              {itensFiltrados.map((item, idx) => {
-                const idItem = item.id || idx;
-                const estaMarcado = !!comprados[idItem];
-
+          {/* Checklist de Itens */}
+          <div className="feira-checklist">
+            {filteredItens.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-muted)' }}>
+                Nenhum ingrediente corresponde à busca.
+              </div>
+            ) : (
+              filteredItens.map((item, idx) => {
+                const isChecked = !!comprados[item.id || idx];
                 return (
                   <div
-                    key={idItem}
-                    id={`item-interativo-${idItem}`}
-                    className={`card-item-interativo ${estaMarcado ? 'item-marcado' : ''}`}
-                    onClick={() => alternarComprado(idItem)}
-                    role="button"
-                    tabIndex={0}
+                    key={item.id || idx}
+                    className={`feira-item ${isChecked ? 'comprado' : ''}`}
+                    onClick={() => toggleComprado(item.id || idx)}
                   >
-                    {/* Checkbox Touch Amplo */}
-                    <div className="checkbox-touch-area">
-                      {estaMarcado ? (
-                        <CheckSquare size={26} color="var(--emerald-success)" />
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+                      {isChecked ? (
+                        <CheckSquare size={22} color="var(--emerald-success)" />
                       ) : (
-                        <Square size={26} color="var(--text-muted)" />
+                        <Square size={22} color="var(--text-muted)" />
                       )}
-                    </div>
-
-                    {/* Informações Centrais do Ingrediente */}
-                    <div className="info-item-interativo">
-                      <div className="linha-titulo-item">
-                        <span className="nome-item-interativo">
-                          {item.nome}
+                      <div>
+                        <div className="feira-item-text">
+                          {item.texto_formatado}
+                        </div>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                          {item.regra_aplicada === 'VENCIDO' && 'Motivo: Lote anterior estragou'}
+                          {item.regra_aplicada === 'FALTA_NO_MES' && 'Motivo: Faltou no meio do mês (+20%)'}
+                          {item.regra_aplicada === 'NORMAL' && 'Motivo: Reposição de rotina'}
                         </span>
                       </div>
-
-                      {/* Tag explicativa da regra de cálculo */}
-                      <div className="rotulos-regra-container">
-                        {item.regra_aplicada === 'VENCIDO' && (
-                          <span className="rotulo-regra-interativo tag-vencido">
-                            Lote anterior estragou (repor meta cheia)
-                          </span>
-                        )}
-                        {item.regra_aplicada === 'FALTA_NO_MES' && (
-                          <span className="rotulo-regra-interativo tag-falta">
-                            Acabou no meio do mês (+20% margem)
-                          </span>
-                        )}
-                        {item.regra_aplicada === 'NORMAL' && (
-                          <span className="rotulo-regra-interativo tag-normal">
-                            Reposição regular de rotina
-                          </span>
-                        )}
-                      </div>
                     </div>
 
-                    {/* Badge da Quantidade a Comprar */}
-                    <div className={`badge-quantidade-interativa ${estaMarcado ? 'quantidade-marcada' : ''}`}>
-                      <span className="valor-quantidade">
-                        {item.quantidade_formatada}
-                      </span>
-                      <span className="unidade-quantidade">
-                        {item.unidade}
-                      </span>
-                    </div>
+                    <span style={{ 
+                      fontSize: '0.85rem', 
+                      fontWeight: 700,
+                      color: isChecked ? 'var(--emerald-success)' : 'var(--amber-light)'
+                    }}>
+                      {item.quantidade_formatada} {item.unidade}
+                    </span>
                   </div>
                 );
-              })}
-            </div>
-          )}
+              })
+            )}
+          </div>
 
-          {/* Banner Comemorativo de 100% Concluído */}
-          {estaCompleto && (
-            <div className="banner-sucesso-interativo">
-              <div className="banner-sucesso-icone">
-                <CheckCircle2 size={26} />
-              </div>
-              <div style={{ flex: 1 }}>
-                <strong style={{ color: 'var(--emerald-success)', fontSize: '0.96rem', display: 'block', marginBottom: '2px' }}>
-                  Todos os itens comprados! 🎉
-                </strong>
-                <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
-                  Tudo pronto. Toque em <strong>Confirmar</strong> abaixo para atualizar automaticamente o estoque do restaurante.
+          {isComplete && (
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '0.75rem',
+              background: 'rgba(16, 185, 129, 0.1)',
+              border: '1px solid rgba(16, 185, 129, 0.3)',
+              padding: '1rem',
+              borderRadius: 'var(--radius-md)',
+              animation: 'fadeIn 0.25s ease-out'
+            }}>
+              <CheckCircle2 size={24} color="var(--emerald-success)" />
+              <div>
+                <strong style={{ color: 'var(--emerald-success)' }}>Lista 100% concluída!</strong>
+                <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                  Clique em <strong>Confirmar</strong> abaixo para atualizar automaticamente o estoque do restaurante.
                 </p>
               </div>
             </div>
           )}
-
-          {/* Espaçador invisível para rolagem confortável sem cortes no mobile */}
-          <div className="espacador-inferior-interativo" aria-hidden="true" />
         </div>
 
-        {/* 4. Rodapé Fixo Touch-First com Safe Area */}
-        <div className="modal-footer rodape-lista-interativa">
-          <div className="rodape-status-linha">
-            <span className="texto-status-rodape">
-              {estaCompleto ? (
-                <span style={{ color: 'var(--emerald-success)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <Check size={15} /> 100% no carrinho
-                </span>
-              ) : (
-                <span>
-                  Faltam <strong>{totalPendentes} {totalPendentes === 1 ? 'item' : 'itens'}</strong> para liberar
-                </span>
-              )}
-            </span>
-          </div>
+        {/* Rodapé Padronizado */}
+        <div className="modal-footer" style={{ justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
+          <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+            {isComplete ? (
+              <span style={{ color: 'var(--emerald-success)', fontWeight: 600 }}>
+                ✓ Checklist concluído
+              </span>
+            ) : (
+              <span>{totalComprados} de {totalItens} item(ns) marcado(s)</span>
+            )}
+          </span>
 
-          <div className="rodape-botoes-container">
+          <div style={{ display: 'flex', gap: '0.75rem', width: 'auto' }} className="modal-footer-btns">
             <button 
-              id="btn-fechar-rodape-interativa"
               type="button" 
-              className="btn btn-secondary btn-touch-rodape" 
+              className="btn btn-secondary" 
               onClick={onClose} 
-              disabled={loading || exibirConfirmacao}
+              disabled={loading || showConfirmDialog}
             >
-              Fechar
+              Cancelar
             </button>
 
             <button
               id="btn-confirmar-estoque"
               type="button"
-              className={`btn btn-success btn-touch-rodape btn-confirmar-interativa ${estaCompleto ? 'pulsar-destaque' : ''}`}
+              className="btn btn-primary"
               onClick={handleOpenConfirm}
-              disabled={!estaCompleto || loading}
-              title={estaCompleto ? 'Confirmar e atualizar estoque' : 'Marque todos os itens para liberar a confirmação'}
+              disabled={!isComplete || loading}
+              title={isComplete ? 'Confirmar compra e atualizar estoque' : 'Marque todos os itens para habilitar'}
+              style={{
+                opacity: isComplete ? 1 : 0.4,
+                cursor: isComplete ? 'pointer' : 'not-allowed',
+              }}
             >
-              <CheckCircle2 size={19} />
-              <span>{loading ? 'Atualizando...' : estaCompleto ? 'Confirmar e Atualizar' : 'Confirmar'}</span>
+              <CheckCircle2 size={16} />
+              <span>{loading ? 'Atualizando...' : 'Confirmar'}</span>
             </button>
           </div>
         </div>

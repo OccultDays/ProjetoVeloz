@@ -43,7 +43,7 @@ export default function ShoppingListView({
           <h2>Lista de Compras Oficial do Mês</h2>
         </div>
 
-        <div className="botoes-acoes-lista-compras">
+        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
           {onRefresh && (
             <button
               id="btn-refresh-shopping-list"
